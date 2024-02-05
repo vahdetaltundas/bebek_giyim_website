@@ -50,8 +50,8 @@ const register = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Yeni kullanıcıyı veritabanına ekle
-        const insertQuery = 'INSERT INTO Users (UserName, PasswordHash, EMail, Tel) VALUES (?, ?, ?, ?)';
-        await dbConnection.execute(insertQuery, [username, hashedPassword, email, tel]);
+        const insertQuery = 'INSERT INTO Users (UserName, PasswordHash, EMail, Tel, role) VALUES (?, ?, ?, ?, ?)';
+        await dbConnection.execute(insertQuery, [username, hashedPassword, email, tel, process.env.DEFAULT_ROLE]);
         return new Response(null,"User registered successfully").created(res);
     } catch (error) {
         console.error("Registration error:", error);

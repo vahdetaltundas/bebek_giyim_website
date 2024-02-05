@@ -7,6 +7,7 @@ const createToken = async (user, res) => {
         const payload = {
             sub: user.ID,
             username: user.UserName,
+            role:user.role
         };
 
         const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, {
@@ -38,11 +39,36 @@ const tokenCheck = async (req, res, next) => {
 
     await jwt.verify(token, process.env.JWT_SECRET_KEY, async (err, decoded) => {
         if (err) throw new APIError("Geçersiz Token",401)
-        const [rows, fields] = await dbConnection.execute('SELECT ID,UserName,EMail FROM Users WHERE ID = ?', [decoded.sub]);
-
+        const [rows, fields] = await dbConnection.execute('SELECT ID,UserName,EMail FROM Users WHERE ID = ? AND role = ?', [decoded.sub,decoded.role]);
+        
         if (!rows[0])
             throw new APIError("Geçersiz Token",401)
 
+        
+        req.user = rows[0]
+        next();
+    })
+    
+}
+
+const tokenCheckAdmin = async (req, res, next) => {
+    const headerToken = req.headers.authorization && req.headers.authorization.startsWith("Bearer ") 
+
+    if (!headerToken)
+        throw new APIError("Geçersiz Oturum Lütfen Oturum Açın",401)
+
+    const token = req.headers.authorization.split(" ")[1]
+
+    await jwt.verify(token, process.env.JWT_SECRET_KEY, async (err, decoded) => {
+        if (err) throw new APIError("Geçersiz Token",401)
+        const [rows, fields] = await dbConnection.execute('SELECT ID,UserName,EMail FROM Users WHERE ID = ? AND role = ?', [decoded.sub,decoded.role]);
+        
+        if (!rows[0])
+            throw new APIError("Geçersiz Token",401)
+        
+        if(decoded.role!=process.env.ADMIN_ROLE){
+            throw new APIError("Geçersiz Token",401)
+        }
         req.user = rows[0]
         next();
     })
@@ -50,5 +76,6 @@ const tokenCheck = async (req, res, next) => {
 }
 module.exports = {
     createToken,
-    tokenCheck
+    tokenCheck,
+    tokenCheckAdmin
 }
