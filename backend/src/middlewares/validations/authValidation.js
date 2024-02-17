@@ -7,11 +7,25 @@ class authValidation {
         try {
 
             await joi.object({
-                username: joi.string().trim().min(3).max(100).required().messages({
+                companyName : joi.string().trim().min(3).max(150).required().messages({
+                    "string.base": "İsim Alanı Normal Metin Olmalıdır",
+                    "string.empty": "İsim Alanı Boş Olamaz !",
+                    "string.min": "İsim Alanı Ez Az 3 Karakter Olmalıdır",
+                    "string.max": "İsim Alanı En Fazla 150 Karakterden Oluşabilir",
+                    "string.required": "İsim Alanı Zorunludur"
+                }),
+                fullName : joi.string().trim().min(3).max(100).required().messages({
                     "string.base": "İsim Alanı Normal Metin Olmalıdır",
                     "string.empty": "İsim Alanı Boş Olamaz !",
                     "string.min": "İsim Alanı Ez Az 3 Karakter Olmalıdır",
                     "string.max": "İsim Alanı En Fazla 100 Karakterden Oluşabilir",
+                    "string.required": "İsim Alanı Zorunludur"
+                }),
+                address : joi.string().trim().min(3).max(750).required().messages({
+                    "string.base": "İsim Alanı Normal Metin Olmalıdır",
+                    "string.empty": "İsim Alanı Boş Olamaz !",
+                    "string.min": "İsim Alanı Ez Az 3 Karakter Olmalıdır",
+                    "string.max": "İsim Alanı En Fazla 750 Karakterden Oluşabilir",
                     "string.required": "İsim Alanı Zorunludur"
                 }),
                 email: joi.string().email().trim().min(3).max(100).required().messages({
@@ -29,7 +43,7 @@ class authValidation {
                     "string.max": "Şifre Alanı En Fazla 36 Karakterden Oluşabilir",
                     "string.required": "Şifre Alanı Zorunludur"
                 }),
-                tel:joi.string().regex(/^\+?[0-9]{10,}$/).required().messages({
+                phoneNumber:joi.string().regex(/^\+?[0-9]{10,}$/).required().messages({
                     'string.base': 'Telefon numarası bir metin olmalıdır.',
                     'string.empty': 'Telefon numarası boş olamaz.',
                     'string.pattern.base': 'Geçersiz telefon numarası formatı.',

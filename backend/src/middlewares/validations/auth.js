@@ -5,8 +5,8 @@ const APIError = require("../../utils/errors.js");
 const createToken = async (user, res) => {
     try {
         const payload = {
-            sub: user.ID,
-            username: user.UserName,
+            sub: user.id,
+            username: user.full_name,
             role:user.role
         };
 

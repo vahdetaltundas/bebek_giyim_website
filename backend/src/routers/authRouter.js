@@ -1,5 +1,5 @@
 const router=require("express").Router();
-const {login,register}=require("../controllers/authController.js");
+const {login,register,forgetPassword}=require("../controllers/authController.js");
 const { tokenCheck } = require("../middlewares/validations/auth.js");
 const authValidation = require("../middlewares/validations/authValidation.js");
 
@@ -14,5 +14,6 @@ router.get("/users",tokenCheck,async(req,res)=>{
     res.json(rows[0])
 })
 
+router.post("/forget-password",forgetPassword)
 module.exports=router;
 
