@@ -50,9 +50,9 @@ const Footer = () => {
                 </Link>
               </p>
               <p className="mb-4">
-                <a href="#!" className="text-neutral-600">
+                <Link href="/auth/forgetpassword" className="text-neutral-600">
                   Şifremi Unuttum
-                </a>
+                </Link>
               </p>
             </div>
             <div>
@@ -94,9 +94,8 @@ const Footer = () => {
         <div className="bg-neutral-200 p-6 text-center">
           <span>© 2024 Copyright:</span>
           <Link
-          href="https://www.linkedin.com/in/vahdet-altunda%C5%9F-2ab8b1234/"
+            href="https://www.linkedin.com/in/vahdet-altunda%C5%9F-2ab8b1234/"
             className="font-semibold text-neutral-600"
-
           >
             Vahdet Altundaş
           </Link>

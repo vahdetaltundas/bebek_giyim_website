@@ -77,11 +77,28 @@ const productDeleteById=async(req,res)=>{
     }
 }
 
+const productImageUrl=async(req,res)=>{
+    try {
+        const productId = req.params.id;
+
+        const [rows, fields] = await dbConnection.execute('SELECT * FROM product WHERE id=?', [productId]);
+        if (rows.length > 0) { 
+            const rows2=await dbConnection.execute('SELECT * FROM productimage WHERE productId=?', [productId]);
+            return new Response(rows2[0]).success(res);
+        } else {
+            return new Response().error404(res);
+        }
+    } catch (error) {
+        console.error("Product delete error:", error);
+        return res.status(500).json({ success: false, error: "Server error: Failed to delete product." });
+    }
+}
 
 module.exports={
     productGetAll,
     productGetByID,
     productCreate,
     productUpdateById,
-    productDeleteById
+    productDeleteById,
+    productImageUrl
 }

@@ -12,7 +12,7 @@ const dbConnection=require("../db/dbConnection.js")
 router.use("/auth",authRouter);
 router.use("/categories",categoryRouter);
 router.use("/products",productRouter);
-router.use("/upload/:id",tokenCheckAdmin,function(req,res){
+router.use("/upload/:id",function(req,res){
     upload(req,res,async function(err){
         if(err instanceof multer.MulterError){
             throw new APIError("Resim yüklerken Multer kaynaklı hata çıktı",err);

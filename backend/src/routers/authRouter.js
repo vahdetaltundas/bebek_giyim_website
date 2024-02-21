@@ -7,7 +7,7 @@ const dbConnection=require("../db/dbConnection.js");
 
 router.post("/login",authValidation.login, login);
 
-router.post("/register",authValidation.register,register);
+router.post("/register",register);
 
 router.get("/users",tokenCheck,async(req,res)=>{
     const [rows, fields] = await dbConnection.execute('SELECT * FROM Users');

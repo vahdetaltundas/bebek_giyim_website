@@ -1,7 +1,34 @@
 import { FaBaby } from "react-icons/fa";
 import Link from "next/link";
+import { registerInitialValues, registerValidationSchema } from "@/validations/registerValidation";
+import { useFormik } from "formik";
+import { useRouter } from "next/router";
+import ErrorMessage from "@/components/errorMessage/ErrorMessage";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const register = () => {
+  const router = useRouter();
+  const formik = useFormik({
+    initialValues: registerInitialValues,
+    validationSchema: registerValidationSchema,
+    onSubmit: async (values) => {
+      try {
+        const response=await axios.post("http://localhost:3001/api/auth/register",{
+          email:values.email,
+          password:values.password,
+          fullName:values.fullName,
+          companyName:values.companyName,
+          phoneNumber:values.phoneNumber,
+          address:values.address
+        });
+        toast.success(response.data.message);
+        router.push("/");
+      } catch (error) {
+        toast.error(error.response.data.message);
+      }
+    },
+  });
   return (
     <section
       className="bg-gray-50 pt-10 pb-28 "
@@ -25,8 +52,8 @@ const register = () => {
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
               Hesap Oluşturun
             </h1>
-            <form className="space-y-4 md:space-y-5 " action="#">
-            <div>
+            <form className="space-y-4 md:space-y-5 " onSubmit={formik.handleSubmit}>
+              <div>
                 <label
                   htmlFor="companyName"
                   className="block mb-2 text-sm font-medium text-gray-900"
@@ -36,11 +63,15 @@ const register = () => {
                 <input
                   type="text"
                   name="companyName"
-                  id="companyName"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2"
                   placeholder="Şirket Adı"
                   required=""
+                  value={formik.values.companyName}
+                  onChange={formik.handleChange}
                 />
+                {formik.touched.companyName && formik.errors.companyName ? (
+                  <ErrorMessage errorMessage={formik.errors.companyName} />
+                ) : null}
               </div>
               <div>
                 <label
@@ -52,11 +83,15 @@ const register = () => {
                 <input
                   type="text"
                   name="fullName"
-                  id="fullName"
                   placeholder="Adınız Soyadınız"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2"
                   required=""
+                  value={formik.values.fullName}
+                  onChange={formik.handleChange}
                 />
+                {formik.touched.fullName && formik.errors.fullName ? (
+                  <ErrorMessage errorMessage={formik.errors.fullName} />
+                ) : null}
               </div>
               <div>
                 <label
@@ -68,11 +103,15 @@ const register = () => {
                 <input
                   type="email"
                   name="email"
-                  id="email"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2"
                   placeholder="name@company.com"
                   required=""
+                  value={formik.values.email}
+                  onChange={formik.handleChange}
                 />
+                {formik.touched.email && formik.errors.email ? (
+                  <ErrorMessage errorMessage={formik.errors.email} />
+                ) : null}
               </div>
               <div>
                 <label
@@ -82,13 +121,17 @@ const register = () => {
                   Telefon Numaranız
                 </label>
                 <input
-                  type="tel"
+                  type="number"
                   name="phoneNumber"
-                  id="phoneNumber"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2"
                   placeholder="Telefon Numaranız"
                   required=""
+                  value={formik.values.phoneNumber}
+                  onChange={formik.handleChange}
                 />
+                {formik.touched.phoneNumber && formik.errors.phoneNumber ? (
+                  <ErrorMessage errorMessage={formik.errors.phoneNumber} />
+                ) : null}
               </div>
               <div>
                 <label
@@ -100,11 +143,15 @@ const register = () => {
                 <input
                   type="password"
                   name="password"
-                  id="password"
                   placeholder="••••••••"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2"
                   required=""
+                  value={formik.values.password}
+                  onChange={formik.handleChange}
                 />
+                {formik.touched.password && formik.errors.password ? (
+                  <ErrorMessage errorMessage={formik.errors.password} />
+                ) : null}
               </div>
               <div>
                 <label
@@ -115,13 +162,17 @@ const register = () => {
                 </label>
                 <textarea
                   name="address"
-                  id="address"
                   placeholder="Adresiniz"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2"
                   required=""
+                  value={formik.values.address}
+                  onChange={formik.handleChange}
                 />
+                {formik.touched.address && formik.errors.address ? (
+                  <ErrorMessage errorMessage={formik.errors.address} />
+                ) : null}
               </div>
-              
+
               <button
                 type="submit"
                 className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
@@ -144,5 +195,39 @@ const register = () => {
     </section>
   );
 };
+export async function getServerSideProps(context) {
+  // HTTP isteği başlıklarını al
+  const { req } = context;
 
+  // Cookie bilgilerini al
+  const cookieHeader = req.headers.cookie;
+
+  // Eğer cookie bilgisi yoksa
+  if (!cookieHeader) {
+    return {
+      props: {},
+    };
+  }
+
+  // Cookie bilgisini ayrıştır
+  const cookies = cookieHeader.split(";").reduce((cookies, cookie) => {
+    const [name, value] = cookie.trim().split("=").map(decodeURIComponent);
+    cookies[name] = value;
+    return cookies;
+  }, {});
+
+  if (cookies.token) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+      props: {},
+    };
+  } else {
+    return {
+      props: {},
+    };
+  }
+}
 export default register;

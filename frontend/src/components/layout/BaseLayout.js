@@ -1,8 +1,8 @@
 import Footer from "./Footer";
-import Header from "./Header"
+import Header from "./Headers"
 
 const BaseLayout = ({ children }) => {
-  
+
   return (
     <>
     <Header/>

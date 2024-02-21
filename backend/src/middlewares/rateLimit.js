@@ -4,13 +4,13 @@ const apiLimiter=rateLimit({
     windowMs:15*60*1000,
     max:(req,res)=>{
         if(req.url==="/auth/login"||req.url==="/auth/register"){
-            return 5;
+            return 50;
         }
         if(req.url==="/auth/forget-password"){
-            return 3;
+            return 30;
         }
         else{
-            return 100;
+            return 1000;
         }
     },
     message:{

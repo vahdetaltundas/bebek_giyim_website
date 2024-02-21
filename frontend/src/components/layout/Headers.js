@@ -1,25 +1,38 @@
+import { fetchCategories } from "@/pages/api/hello";
 import Link from "next/link";
-import React from "react";
+import { useEffect, useState } from "react";
 import { FaUser, FaFacebook, FaInstagram } from "react-icons/fa";
 
 const Header = () => {
+  const [categories,setCategories]=useState([]);
+    const getCategories=async()=>{
+        try {
+            const response=await fetchCategories();
+            setCategories(response.data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    useEffect(()=>{
+        getCategories();
+    },[])
   return (
     <header className="shadow-md bg-white font-sans">
       <section className="flex items-center lg:justify-center max-sm:flex-col relative py-1 px-10 border-gray-200 border-b lg:min-h-[80px] max-lg:min-h-[60px]">
-        <a  className="max-md:w-full max-sm:mb-3">
+        <Link href="/" className="max-md:w-full max-sm:mb-3">
           <img
             src="/images/Logo.png"
             alt="logo"
             className="md:w-[160px] w-36"
           />
-        </a>
+        </Link>
         <div className="md:absolute md:right-10 flex items-center max-md:ml-auto">
           <FaFacebook className="w-6 h-6 mr-6" />
           <FaInstagram className="w-6 h-6 mr-6" />
           <div className="inline-block border-gray-300 border-l-2 pl-6 cursor-pointer">
-            <Link href="/auth/login">
-              <FaUser className="w-6 h-6" />
-            </Link>
+          <Link href="/auth/login">
+                <FaUser className="w-6 h-6" />
+              </Link>
           </div>
         </div>
       </section>
@@ -46,56 +59,27 @@ const Header = () => {
         >
           <li className="max-lg:border-b max-lg:py-2">
             <a
-              href="javascript:void(0)"
+              href=""
               className="hover:text-[#007bff] text-[#007bff] font-bold text-[15px] block"
             >
               Anasayfa
             </a>
           </li>
-          <li className="max-lg:border-b max-lg:py-2">
+          {categories?categories.map((categori)=>(
+            <li key={categori.id}className="max-lg:border-b max-lg:py-2">
             <a
-              href="javascript:void(0)"
+              href=""
               className="hover:text-[#007bff] text-gray-600 font-bold text-[15px] block"
             >
-              Kategori 1
+              {categori.categoryName}
             </a>
           </li>
-          <li className="max-lg:border-b max-lg:py-2">
-            <a
-              href="javascript:void(0)"
-              className="hover:text-[#007bff] text-gray-600 font-bold text-[15px] block"
-            >
-              Kategori 2
-            </a>
-          </li>
-          <li className="max-lg:border-b max-lg:py-2">
-            <a
-              href="javascript:void(0)"
-              className="hover:text-[#007bff] text-gray-600 font-bold text-[15px] block"
-            >
-              Kategori 3
-            </a>
-          </li>
-          <li className="max-lg:border-b max-lg:py-2">
-            <a
-              href="javascript:void(0)"
-              className="hover:text-[#007bff] text-gray-600 font-bold text-[15px] block"
-            >
-              Kategori 4
-            </a>
-          </li>
-          <li className="max-lg:border-b max-lg:py-2">
-            <a
-              href="javascript:void(0)"
-              className="hover:text-[#007bff] text-gray-600 font-bold text-[15px] block"
-            >
-              Kategori 5
-            </a>
-          </li>
+          )):null}
         </ul>
       </div>
     </header>
   );
 };
+
 
 export default Header;

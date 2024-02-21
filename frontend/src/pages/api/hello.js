@@ -1,5 +1,16 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import axios from "axios";
+const baseURL="http://localhost:3001/api";
 
-export default function handler(req, res) {
-  res.status(200).json({ name: "John Doe" });
+const axiosInstance=axios.create({
+    baseURL,
+});
+
+export const fetchProducts=async()=>{
+  const response=await axiosInstance.get("/products");
+  return response.data;
+}
+
+export const fetchCategories=async()=>{
+  const response=await axiosInstance.get("/categories");
+  return response.data;
 }

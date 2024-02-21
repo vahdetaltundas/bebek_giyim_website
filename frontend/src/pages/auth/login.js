@@ -1,6 +1,39 @@
+import ErrorMessage from "@/components/errorMessage/ErrorMessage";
+import {
+  loginInitialValues,
+  loginValidationSchema,
+} from "@/validations/loginValidation";
+import axios from "axios";
+import { useFormik } from "formik";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { FaBaby } from "react-icons/fa";
+import { toast } from "react-toastify";
 const login = () => {
+  const router = useRouter();
+  const formik = useFormik({
+    initialValues: loginInitialValues,
+    validationSchema: loginValidationSchema,
+    onSubmit: async (values) => {
+      const { email, password } = values;
+      try {
+        const response = await axios.post(
+          "http://localhost:3001/api/auth/login",
+          {
+            email: values.email,
+            password: values.password,
+          }
+        );
+        const token = response.data.token;
+        document.cookie = `token=${token}; path=/`;
+        toast.success(response.data.message);
+        router.push("/");
+      } catch (error) {
+        console.log(error);
+        toast.error(error.response.data.message);
+      }
+    },
+  });
   return (
     <section
       className="bg-gray-50 p-10"
@@ -24,7 +57,10 @@ const login = () => {
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
               Hesabınıza Giriş Yapın
             </h1>
-            <form className="space-y-4 md:space-y-6" action="#">
+            <form
+              className="space-y-4 md:space-y-6"
+              onSubmit={formik.handleSubmit}
+            >
               <div>
                 <label
                   htmlFor="email"
@@ -35,11 +71,15 @@ const login = () => {
                 <input
                   type="email"
                   name="email"
-                  id="email"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                   placeholder="name@company.com"
                   required=""
+                  value={formik.values.email}
+                  onChange={formik.handleChange}
                 />
+                {formik.touched.email && formik.errors.email ? (
+                  <ErrorMessage errorMessage={formik.errors.email} />
+                ) : null}
               </div>
               <div>
                 <label
@@ -51,11 +91,15 @@ const login = () => {
                 <input
                   type="password"
                   name="password"
-                  id="password"
                   placeholder="••••••••"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                   required=""
+                  value={formik.values.password}
+                  onChange={formik.handleChange}
                 />
+                {formik.touched.password && formik.errors.password ? (
+                  <ErrorMessage errorMessage={formik.errors.password} />
+                ) : null}
               </div>
               <div className="flex items-center justify-between">
                 <Link
@@ -87,5 +131,39 @@ const login = () => {
     </section>
   );
 };
+export async function getServerSideProps(context) {
+  // HTTP isteği başlıklarını al
+  const { req } = context;
 
+  // Cookie bilgilerini al
+  const cookieHeader = req.headers.cookie;
+
+  // Eğer cookie bilgisi yoksa
+  if (!cookieHeader) {
+    return {
+      props: {},
+    };
+  }
+
+  // Cookie bilgisini ayrıştır
+  const cookies = cookieHeader.split(";").reduce((cookies, cookie) => {
+    const [name, value] = cookie.trim().split("=").map(decodeURIComponent);
+    cookies[name] = value;
+    return cookies;
+  }, {});
+
+  if (cookies.token) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+      props: {},
+    };
+  } else {
+    return {
+      props: {},
+    };
+  }
+}
 export default login;

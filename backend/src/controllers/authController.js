@@ -12,10 +12,10 @@ const login = async (req, res) => {
         const [rows, fields] = await dbConnection.execute('SELECT * FROM Users WHERE email = ?', [email]);
 
         if (rows.length === 0) {
-            return res.status(401).json({ success:false, message: 'Authentication failed. Email or password not found.' });
+            return res.status(401).json({ success:false, message: 'Girmiş olduğunuz eposta yada şifre hatalı.' });
         }
         if (rows[0].activation !== 1) {
-            return res.status(401).json({ success: false, message: 'Activation not found.' });
+            return res.status(401).json({ success: false, message: 'Hesabınız tarafımızdan aktif edilmemiştir.' });
         }
         const user = rows[0];
 
@@ -29,7 +29,7 @@ const login = async (req, res) => {
             if (match) {
                 createToken(user,res)
             } else {
-                return res.status(401).json({ success:false, message: 'Authentication failed. Email or password not found.' });
+                return res.status(401).json({ success:false, message: 'Girmiş olduğunuz eposta yada şifre hatalı.' });
             }
         });
     } catch (error) {
@@ -47,7 +47,7 @@ const register = async (req, res) => {
 
         // Kullanıcı zaten varsa hata dön
         if (existingEmail.length > 0) {
-            return res.status(400).json({ success:false, message: 'Email already exists.' });
+            return res.status(400).json({ success:false, message: 'Bu eposta adresi sisteme kayıtlıdır' });
         }
 
         // Şifreyi hashle
@@ -56,7 +56,7 @@ const register = async (req, res) => {
         // Yeni kullanıcıyı veritabanına ekle
         const insertQuery = 'INSERT INTO Users (company_name, full_name, email, phone_number, password, address) VALUES (?, ?, ?, ?, ?, ?)';
         await dbConnection.execute(insertQuery, [companyName, fullName, email, phoneNumber, hashedPassword, address]);
-        return new Response(null,"User registered successfully").created(res);
+        return new Response(null,"Kayıt bilgileriniz ulaştı onaylamamızı bekleyin").created(res);
     } catch (error) {
         console.error("Registration error:", error);
         return res.status(500).json({ success:false, error: "Internal server error" });
@@ -69,10 +69,10 @@ const forgetPassword = async (req, res) => {
         const [rows, fields] = await dbConnection.execute('SELECT email, activation FROM Users WHERE email = ?', [email]);
 
         if (rows.length === 0) {
-            return res.status(404).json({ success: false, message: 'Email not found.' });
+            return res.status(404).json({ success: false, message: 'Geçersiz mail adresi girdiniz.' });
         }
         if (rows[0].activation !== 1) {
-            return res.status(401).json({ success: false, message: 'Activation not found.' });
+            return res.status(401).json({ success: false, message: 'Girmiş olduğunuz mail adresi onaylanmamıştır' });
         }
 
         const resetCode = crypto.randomBytes(4).toString("hex");
