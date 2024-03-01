@@ -58,12 +58,12 @@ const Header = () => {
           className="lg:!flex justify-center lg:space-x-10 max-lg:space-y-3 max-lg:hidden w-full max-lg:mt-2"
         >
           <li className="max-lg:border-b max-lg:py-2">
-            <a
-              href=""
+            <Link
+              href="/"
               className="hover:text-[#007bff] text-[#007bff] font-bold text-[15px] block"
             >
               Anasayfa
-            </a>
+            </Link>
           </li>
           {categories?categories.map((categori)=>(
             <li key={categori.id}className="max-lg:border-b max-lg:py-2">

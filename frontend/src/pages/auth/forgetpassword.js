@@ -22,7 +22,6 @@ const forgetpassword = () => {
             email: values.email,
           }
         );
-        console.log(response);
         toast.success(response.data.message);
         router.push("/");
       } catch (error) {

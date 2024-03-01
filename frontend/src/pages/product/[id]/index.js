@@ -1,7 +1,28 @@
 import axios from "axios";
-import React from "react";
+import { destroyCookie, parseCookies } from "nookies";
+import React, { useEffect, useState } from "react";
 
-const index = ({product}) => {
+const index = ({ product,loginCheck }) => {
+  const [imagesUrl, setImagesUrl] = useState(null);
+  const [selectFoto,setSelectFoto]=useState(0);
+  const getImages = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/products/image/${product.id}`
+      );
+      const imagesArray = response.data.data[0].imageUrl.split(",");
+      const clearImages = imagesArray.map((image) => {
+        return image.replace(/[\[\]"]/g, "");
+      });
+      setImagesUrl(clearImages);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getImages();
+  }, []);
   return (
     <section className="py-10 font-poppins dark:bg-gray-800">
       <div className="max-w-6xl px-4 mx-auto">
@@ -9,40 +30,45 @@ const index = ({product}) => {
           <div className="w-full px-4 mb-8 md:w-1/2 md:mb-0">
             <div className="sticky top-0 overflow-hidden ">
               <div className="relative mb-6 lg:mb-10 lg:h-96">
-                <img
-                  className="object-contain w-full lg:h-full"
-                  src=""
-                  alt=""
-                />
+                {imagesUrl ? (
+                  <img
+                    className="object-contain w-full lg:h-full"
+                    src={`http://localhost:3001/uploads/${imagesUrl[selectFoto]}`}
+                    alt=""
+                  />
+                ) : null}
               </div>
               <div className="flex-wrap hidden -mx-2 md:flex">
-                <div className="w-1/2 p-2 sm:w-1/4">
-                  <a
-                    className="block border border-gray-200 hover:border-blue-400 dark:border-gray-700 dark:hover:border-blue-300"
-                    href="#"
-                  >
-                    <img
-                      className="object-contain w-full lg:h-28"
-                      src=""
-                      alt=""
-                    />
-                  </a>
-                </div>
+                {imagesUrl
+                  ? imagesUrl.map((image, index) => (
+                      <div className="w-1/2 p-2 sm:w-1/4" key={index}>
+                        <div
+                          className="block border border-gray-200 hover:border-blue-400 dark:border-gray-700 dark:hover:border-blue-300"
+                          onClick={()=>{setSelectFoto(index)}}
+                        >
+                          <img
+                            className="object-contain w-full lg:h-28"
+                            src={`http://localhost:3001/uploads/${image}`}
+                            alt=""
+                          />
+                        </div>
+                      </div>
+                    ))
+                  : null}
               </div>
             </div>
           </div>
           <div className="w-full px-4 md:w-1/2">
             <div className="lg:pl-20">
               <div className="mb-6 ">
-                
                 <h2 className="max-w-xl mt-6 mb-6 text-xl font-semibold leading-loose tracking-wide text-gray-700 md:text-2xl dark:text-gray-300">
-                  {product[0].productName}
+                  {product.productName}
                 </h2>
                 <div className="flex flex-wrap items-center mb-6">
-                  {product[0].description}
+                  {product.description}
                 </div>
                 <p className="inline-block text-2xl font-semibold text-gray-700 dark:text-gray-400 ">
-                  Price
+                  {loginCheck?product.price:"Ücreti görmek için giriş yapın"}
                 </p>
               </div>
               <div className="mb-6">
@@ -85,9 +111,7 @@ const index = ({product}) => {
                   </div>
                 </div>
               </div>
-              <div className="py-6 mb-6 border-t border-b border-gray-200 dark:border-gray-700">
-                
-              </div>
+              <div className="py-6 mb-6 border-t border-b border-gray-200 dark:border-gray-700"></div>
               <div className="mb-6 " />
               <div className="flex flex-wrap items-center mb-6">
                 <div className="mb-4 lg:mb-0">
@@ -121,22 +145,33 @@ const index = ({product}) => {
   );
 };
 export async function getServerSideProps({ req, params }) {
-    try {
-      const product = await axios.get(
-        `http://localhost:3001/api/products/${params.id}`
-      );
+  const cookies = parseCookies({ req });
+  const token = cookies.token ?? null;
+
+  try {
+    const product = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_URL}/products/${params.id}`,
+      {
+          headers: {
+              Authorization: `Bearer ${token}`
+          }
+      }
+  );
+      
+          return {
+              props: {
+                  product: product ? product.data.data.data : null,
+                  loginCheck: product.data.data.loginCheck
+              },
+          };
+      
+  } catch (err) {
       return {
-        props: {
-          product: product ? product.data.data : null,
-        },
+          redirect: {
+              destination: "/",
+              permanent: false,
+          },
       };
-    } catch (err) {
-      return {
-        redirect: {
-          destination: "/",
-          permanent: false,
-        },
-      };
-    }
   }
+}
 export default index;

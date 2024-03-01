@@ -29,27 +29,27 @@ const createToken = async (user, res) => {
     }
 }
 
-const tokenCheck = async (req, res, next) => {
-    const headerToken = req.headers.authorization && req.headers.authorization.startsWith("Bearer ") 
+const tokenCheck = async (authorizationHeader) => {
+    if (!authorizationHeader || !authorizationHeader.startsWith("Bearer ")) {
+        return false; // Geçersiz oturum, oturum açılmamış
+    }
 
-    if (!headerToken)
-        throw new APIError("Geçersiz Oturum Lütfen Oturum Açın",401)
+    const token = authorizationHeader.split(" ")[1];
 
-    const token = req.headers.authorization.split(" ")[1]
-
-    await jwt.verify(token, process.env.JWT_SECRET_KEY, async (err, decoded) => {
-        if (err) throw new APIError("Geçersiz Token",401)
-        const [rows, fields] = await dbConnection.execute('SELECT ID,UserName,EMail FROM Users WHERE ID = ? AND role = ?', [decoded.sub,decoded.role]);
+    try {
+        const decoded = await jwt.verify(token, process.env.JWT_SECRET_KEY);
+        const [rows, fields] = await dbConnection.execute('SELECT * FROM users WHERE id = ? AND role = ?', [decoded.sub, decoded.role]);
         
-        if (!rows[0])
-            throw new APIError("Geçersiz Token",401)
-
+        if (!rows[0]) {
+            return false; // Geçersiz token
+        }
         
-        req.user = rows[0]
-        next();
-    })
-    
+        return true; // Token doğru olduğu için true döner
+    } catch (error) {
+        return false; // Token doğrulanamadı
+    }
 }
+
 
 const tokenCheckAdmin = async (req, res, next) => {
     const headerToken = req.headers.authorization && req.headers.authorization.startsWith("Bearer ") 
@@ -61,7 +61,7 @@ const tokenCheckAdmin = async (req, res, next) => {
 
     await jwt.verify(token, process.env.JWT_SECRET_KEY, async (err, decoded) => {
         if (err) throw new APIError("Geçersiz Token",401)
-        const [rows, fields] = await dbConnection.execute('SELECT ID,UserName,EMail FROM Users WHERE ID = ? AND role = ?', [decoded.sub,decoded.role]);
+        const [rows, fields] = await dbConnection.execute('SELECT id,email FROM Users WHERE id = ? AND role = ?', [decoded.sub,decoded.role]);
         
         if (!rows[0])
             throw new APIError("Geçersiz Token",401)
