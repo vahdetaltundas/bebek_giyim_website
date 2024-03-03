@@ -24,14 +24,9 @@ const productGetByID = async (req, res) => {
     );
     if (rows[0] !== undefined) {
       const authorizationHeader = req.headers.authorization;
-      const response = tokenCheck(authorizationHeader);
       tokenCheck(authorizationHeader)
         .then((isValid) => {
-          if (isValid) {
-            return new Response({data:rows[0],loginCheck:true}).success(res);
-          } else {
-            return new Response({data:rows[0],loginCheck:false}).success(res);
-          }
+          return new Response({data:rows[0],loginCheck:isValid}).success(res);
         })
         .catch((error) => {
             

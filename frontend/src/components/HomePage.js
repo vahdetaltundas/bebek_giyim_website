@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import ProductCard from "./ProductCard";
+import ProductCard from "./layout/ui/ProductCard";
 import { fetchProducts } from "@/pages/api/hello";
 
 const HomePage = () => {

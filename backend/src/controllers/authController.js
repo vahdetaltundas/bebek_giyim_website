@@ -1,7 +1,7 @@
 const dbConnection=require("../db/dbConnection");
 const bcrypt=require("bcrypt");
 const Response = require("../utils/response");
-const { createToken } = require("../middlewares/validations/auth");
+const { createToken, tokenCheck } = require("../middlewares/validations/auth");
 const crypto=require("crypto");
 const sendEmail = require("../utils/sendMail");
 
@@ -93,9 +93,20 @@ const forgetPassword = async (req, res) => {
     }
 }
 
+const loginCheck=async(req,res)=>{
+    const authorizationHeader = req.headers.authorization;
+      tokenCheck(authorizationHeader)
+        .then((isValid) => {
+          return new Response({loginCheck:isValid}).success(res);
+        })
+        .catch((error) => {
+            
+        });
+}
 
 module.exports={
     login,
     register,
-    forgetPassword
+    forgetPassword,
+    loginCheck
 }

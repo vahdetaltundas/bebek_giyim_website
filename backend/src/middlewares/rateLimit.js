@@ -1,16 +1,16 @@
 const rateLimit=require("express-rate-limit");
 
 const apiLimiter=rateLimit({
-    windowMs:15*60*1000,
+    windowMs:1*60*1000,
     max:(req,res)=>{
         if(req.url==="/auth/login"||req.url==="/auth/register"){
-            return 50;
+            return 150;
         }
         if(req.url==="/auth/forget-password"){
-            return 30;
+            return 130;
         }
         else{
-            return 1000;
+            return 900000;
         }
     },
     message:{

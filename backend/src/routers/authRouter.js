@@ -1,5 +1,5 @@
 const router=require("express").Router();
-const {login,register,forgetPassword}=require("../controllers/authController.js");
+const {login,register,forgetPassword, loginCheck}=require("../controllers/authController.js");
 const { tokenCheck } = require("../middlewares/validations/auth.js");
 const authValidation = require("../middlewares/validations/authValidation.js");
 
@@ -9,10 +9,7 @@ router.post("/login",authValidation.login, login);
 
 router.post("/register",register);
 
-router.get("/users",tokenCheck,async(req,res)=>{
-    const [rows, fields] = await dbConnection.execute('SELECT * FROM Users');
-    res.json(rows[0])
-})
+router.get("/logincheck",loginCheck);
 
 router.post("/forget-password",forgetPassword)
 module.exports=router;
