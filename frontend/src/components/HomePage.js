@@ -15,7 +15,6 @@ const HomePage = () => {
     useEffect(()=>{
         getProducts();
     },[])
-  const array = Array.from({ length: 20 }, (_, index) => index);
   return (
     <div className="container mx-auto">
       <div className="mt-20 grid gird-cols-2 md:grid-cols-4 gap-5 mx-5">

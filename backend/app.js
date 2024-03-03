@@ -22,12 +22,10 @@ app.use("/api", rateLimit);
 app.get("/", (req, res) => {
     res.json({ message: "Hoşgeldiniz" });
 });
-
-// API rotası
-app.use("/api", router);
-
 // Hata işleyici middleware
 app.use(errorHandlerMiddleware);
+// API rotası
+app.use("/api", router);
 
 // Server dinleme
 app.listen(port, () => {

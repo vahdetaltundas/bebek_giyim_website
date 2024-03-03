@@ -52,27 +52,29 @@ const tokenCheck = async (authorizationHeader) => {
 
 
 const tokenCheckAdmin = async (req, res, next) => {
-    const headerToken = req.headers.authorization && req.headers.authorization.startsWith("Bearer ") 
+    try {
+        const headerToken = req.headers.authorization && req.headers.authorization.startsWith("Bearer ");
 
-    if (!headerToken)
-        throw new APIError("Geçersiz Oturum Lütfen Oturum Açın",401)
+        if (!headerToken)
+            throw new APIError("Geçersiz Oturum Lütfen Oturum Açın", 401);
 
-    const token = req.headers.authorization.split(" ")[1]
+        const token = req.headers.authorization.split(" ")[1];
 
-    await jwt.verify(token, process.env.JWT_SECRET_KEY, async (err, decoded) => {
-        if (err) throw new APIError("Geçersiz Token",401)
-        const [rows, fields] = await dbConnection.execute('SELECT id,email FROM Users WHERE id = ? AND role = ?', [decoded.sub,decoded.role]);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+        const [rows, fields] = await dbConnection.execute('SELECT id, email FROM Users WHERE id = ? AND role = ?', [decoded.sub, decoded.role]);
         
         if (!rows[0])
-            throw new APIError("Geçersiz Token",401)
+            throw new APIError("Geçersiz Token", 401);
         
-        if(decoded.role!=process.env.ADMIN_ROLE){
-            throw new APIError("Geçersiz Token",401)
+        if (decoded.role !== process.env.ADMIN_ROLE) {
+            throw new APIError("Geçersiz Yetki", 401);
         }
-        req.user = rows[0]
+
+        req.user = rows[0];
         next();
-    })
-    
+    } catch (error) {
+        next(error); // Hata middleware'e yönlendirilir
+    }
 }
 module.exports = {
     createToken,

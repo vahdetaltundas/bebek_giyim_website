@@ -107,7 +107,6 @@ const productUpdateById = async (req, res) => {
           productId,
         ]
       );
-
       return new Response().success(res);
     } else {
       return new Response().error404(res);
@@ -179,6 +178,34 @@ const productImageUrl = async (req, res) => {
   }
 };
 
+const productWithByCategoryId=async (req , res)=>{
+  try {
+    const categoryId = req.params.id;
+    const [rows, fields] = await dbConnection.execute(
+      "SELECT * FROM category WHERE id=?",
+      [categoryId]
+    );
+
+    if (rows.length > 0) {
+      const rows2 = await dbConnection.execute(
+        "SELECT * FROM product WHERE categoryId=?",
+        [categoryId]
+      );
+      return new Response(rows2[0]).success(res);
+    } else {
+      return new Response().error404(res);
+    }
+  } catch (error) {
+    console.error("Product delete error:", error);
+    return res
+      .status(500)
+      .json({
+        success: false,
+        error: "Server error: Failed to delete product.",
+      });
+  }
+}
+
 module.exports = {
   productGetAll,
   productGetByID,
@@ -186,4 +213,5 @@ module.exports = {
   productUpdateById,
   productDeleteById,
   productImageUrl,
+  productWithByCategoryId
 };

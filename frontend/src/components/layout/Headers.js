@@ -73,12 +73,12 @@ const Header = () => {
           {categories
             ? categories.map((categori) => (
                 <li key={categori.id} className="max-lg:border-b max-lg:py-2">
-                  <a
-                    href=""
+                  <Link
+                    href={`/kategori/${categori.id}`}
                     className="hover:text-[#007bff] text-gray-600 font-bold text-[15px] block"
                   >
                     {categori.categoryName}
-                  </a>
+                  </Link>
                 </li>
               ))
             : null}

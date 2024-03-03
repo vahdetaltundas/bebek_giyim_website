@@ -1,5 +1,5 @@
 const router=require("express").Router();
-const {productGetAll,productGetByID,productCreate,productUpdateById,productDeleteById, productImageUrl}=require("../controllers/productController")
+const {productGetAll,productGetByID,productCreate,productUpdateById,productDeleteById, productImageUrl, productWithByCategoryId,}=require("../controllers/productController")
 const {tokenCheckAdmin, tokenCheck}=require("../middlewares/validations/auth.js");
 
 router.get("/:id",productGetByID);
@@ -8,6 +8,7 @@ router.post("/",tokenCheckAdmin,productCreate);
 router.put("/:id",tokenCheckAdmin,productUpdateById);
 router.delete("/:id",tokenCheckAdmin,productDeleteById);
 router.get("/image/:id",productImageUrl);
+router.get("/productWithCategoryId/:id",productWithByCategoryId);
 
 
 module.exports=router;

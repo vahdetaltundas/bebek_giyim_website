@@ -14,3 +14,8 @@ export const fetchCategories=async()=>{
   const response=await axiosInstance.get("/categories");
   return response.data;
 }
+
+export const fetchProductWithCategoryID=async(id)=>{
+  const response=await axiosInstance.get(`/products/productWithCategoryId/${id}`);
+  return response.data;
+}
