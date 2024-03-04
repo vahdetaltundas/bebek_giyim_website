@@ -6,34 +6,42 @@ import React, { useEffect, useState } from "react";
 
 const IndexPage = ({ loginCheck }) => {
   const [baskets, setBaskets] = useState([]);
-  const [totalPrice, setTotalPrice] = useState('0.00'); // Toplam tutar state'i
+  const [totalPrice, setTotalPrice] = useState('0.00');
 
   useEffect(() => {
     const savedBaskets = JSON.parse(localStorage.getItem('baskets')) || [];
     setBaskets(savedBaskets);
-    updateTotalPrice(savedBaskets); // İlk render'da toplam tutarı güncelle
+    updateTotalPrice(savedBaskets);
   }, []);
 
   const productDelete = (id) => {
     const updatedBasket = baskets.filter((item) => item.product.id !== id);
     setBaskets(updatedBasket);
     localStorage.setItem('baskets', JSON.stringify(updatedBasket));
-    updateTotalPrice(updatedBasket); // Ürün silindiğinde toplam tutarı güncelle
+    updateTotalPrice(updatedBasket);
   };
 
-  const handleAmountChange = (newAmount) => {
-    // Yeni miktarı kullanarak toplam tutarı hesaplayın ve state'i güncelleyin
-    const newTotalPrice = (baskets[0].product.price * newAmount).toFixed(2);
-    setTotalPrice(newTotalPrice);
+  const handleAmountChange = (productId, newAmount) => {
+    const updatedBasket = baskets.map(item => {
+      if (item.product.id === productId) {
+        return { ...item, amount: newAmount };
+      }
+      return item;
+    });
+    setBaskets(updatedBasket);
+    localStorage.setItem('baskets', JSON.stringify(updatedBasket));
+    updateTotalPrice(updatedBasket);
   };
 
   const updateTotalPrice = (basketItems) => {
-    // Sepette ürün yoksa veya miktarı sıfırsa toplam tutarı sıfırla
-    if (basketItems.length === 0 || basketItems[0].amount === 0) {
+    if (basketItems.length === 0) {
       setTotalPrice('0.00');
     } else {
-      // Sepette ürün varsa ve miktarı sıfır değilse toplam tutarı güncelle
-      const totalPrice = (basketItems[0].product.price * basketItems[0].amount).toFixed(2);
+      const totalPrice = basketItems.reduce((total, item) => {
+        const miktar = item.amount;
+        const fiyat = parseFloat(item.product.price);
+        return total + (miktar * fiyat);
+      }, 0).toFixed(2);
       setTotalPrice(totalPrice);
     }
   };
@@ -41,7 +49,7 @@ const IndexPage = ({ loginCheck }) => {
   return (
     <>
       {loginCheck ? (
-        <div className="h-screen bg-gray-100 pt-16">
+        <div className="h-max bg-gray-100 pt-16">
           <h1 className="mb-10 text-center text-2xl font-bold">Sepet</h1>
           <div className="mx-auto max-w-5xl justify-center px-6 md:flex md:space-x-6 xl:px-0">
             <div className="rounded-lg md:w-2/3">
@@ -88,6 +96,7 @@ const IndexPage = ({ loginCheck }) => {
     </>
   );
 };
+
 
 
 

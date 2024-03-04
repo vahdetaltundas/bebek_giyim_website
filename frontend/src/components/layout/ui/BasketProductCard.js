@@ -9,13 +9,19 @@ const BasketProductCard = ({
   const [amount, setAmount] = useState(product.amount);
 
   const quantityReduction = () => {
-    setAmount(amount - 1);
-    handleAmountChange(amount - 1); // Üst bileşene miktar değişikliğini iletiyoruz
-  };
+    const newAmount = amount - 1;
+    setAmount(newAmount);
+    if (newAmount === 0) {
+        productDelete(product.product.id); // amount 0 ise ürünü sil
+    } else {
+        handleAmountChange(product.product.id, newAmount);
+    }
+};
 
   const quantityIncrease = () => {
-    setAmount(amount + 1);
-    handleAmountChange(amount + 1); // Üst bileşene miktar değişikliğini iletiyoruz
+    const newAmount = amount + 1;
+    setAmount(newAmount);
+    handleAmountChange(product.product.id, newAmount);
   };
 
   useEffect(() => {
@@ -80,5 +86,6 @@ const BasketProductCard = ({
     </>
   );
 };
+
 
 export default BasketProductCard;

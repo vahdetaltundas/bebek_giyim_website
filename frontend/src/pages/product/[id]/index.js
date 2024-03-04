@@ -97,6 +97,9 @@ const Index = ({ product, loginCheck }) => {
                 <p className="max-w-xl mt-1 mb-6 text-sm font-semibold leading-loose tracking-wide text-gray-500 md:text-base dark:text-gray-300">
                   {`Barkod No : ${product.barcode}`}
                 </p>
+                <p className="max-w-2xl mt-1 mb-6 text-base font-semibold leading-loose tracking-wide text-gray-700 md:text-xl dark:text-gray-300">
+                  {`Yaş Aralığı : ${product.ageRange}`}
+                </p>
                 <p className="inline-block text-2xl font-semibold text-gray-700 dark:text-gray-400 ">
                   {loginCheck
                     ? product.price
