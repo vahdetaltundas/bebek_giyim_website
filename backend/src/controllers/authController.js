@@ -37,6 +37,38 @@ const login = async (req, res) => {
         return res.status(500).json({ success:false, error: "Internal server error" });
     }
 }
+const adminLogin = async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        const [rows, fields] = await dbConnection.execute('SELECT * FROM Users WHERE email = ?', [email]);
+
+        if (rows.length === 0) {
+            return res.status(401).json({ success:false, message: 'Girmiş olduğunuz eposta yada şifre hatalı.' });
+        }
+        if (rows[0].activation !== 1 || rows[0].role !== process.env.ADMIN_ROLE) {
+            return res.status(401).json({ success: false, message: 'Bu eposta şifrenin panele giriş yetkisi yoktur' });
+        }
+        const user = rows[0];
+
+        // Parolaları karşılaştırma
+        bcrypt.compare(password, user.password, (error, match) => {
+            if (error) {
+                console.error("Compare error:", error);
+                return res.status(500).json({ success:false, error: "Internal server error" });
+            }
+
+            if (match) {
+                createToken(user,res)
+            } else {
+                return res.status(401).json({ success:false, message: 'Girmiş olduğunuz eposta yada şifre hatalı.' });
+            }
+        });
+    } catch (error) {
+        console.error("Login error:", error);
+        return res.status(500).json({ success:false, error: "Internal server error" });
+    }
+}
 
 const register = async (req, res) => {
     const { companyName, fullName, email, phoneNumber, password, address } = req.body;
@@ -71,7 +103,7 @@ const forgetPassword = async (req, res) => {
         if (rows.length === 0) {
             return res.status(404).json({ success: false, message: 'Geçersiz mail adresi girdiniz.' });
         }
-        if (rows[0].activation !== 1) {
+        if (rows[0].activation !== 1 ) {
             return res.status(401).json({ success: false, message: 'Girmiş olduğunuz mail adresi onaylanmamıştır' });
         }
 
@@ -108,5 +140,6 @@ module.exports={
     login,
     register,
     forgetPassword,
-    loginCheck
+    loginCheck,
+    adminLogin
 }

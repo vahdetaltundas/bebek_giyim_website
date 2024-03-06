@@ -15,7 +15,6 @@ const index = ({ category }) => {
     }
     useEffect(()=>{
         getProducts();
-        console.log(productWithCategory);
     },[category])
   return (
     <>

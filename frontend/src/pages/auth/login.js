@@ -15,10 +15,9 @@ const login = () => {
     initialValues: loginInitialValues,
     validationSchema: loginValidationSchema,
     onSubmit: async (values) => {
-      const { email, password } = values;
       try {
         const response = await axios.post(
-          "http://localhost:3001/api/auth/login",
+          `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
           {
             email: values.email,
             password: values.password,

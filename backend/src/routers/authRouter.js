@@ -1,5 +1,5 @@
 const router=require("express").Router();
-const {login,register,forgetPassword, loginCheck}=require("../controllers/authController.js");
+const {login,register,forgetPassword, loginCheck, adminLogin}=require("../controllers/authController.js");
 const { tokenCheck } = require("../middlewares/validations/auth.js");
 const authValidation = require("../middlewares/validations/authValidation.js");
 
@@ -12,5 +12,6 @@ router.post("/register",register);
 router.get("/logincheck",loginCheck);
 
 router.post("/forget-password",forgetPassword)
+router.post("/adminLogin",adminLogin)
 module.exports=router;
 
