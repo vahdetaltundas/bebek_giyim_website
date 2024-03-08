@@ -37,7 +37,7 @@ const index = () => {
         <button onClick={() => closeAdminAccount()}>
           <HorizontalCard
             cardUrl=""
-            title="SignOut"
+            title="Çıkış Yap"
             desc="Admin panelden çıkış yap."
             imgUrl="https://i.imgur.com/DYqXITr.png"
           />

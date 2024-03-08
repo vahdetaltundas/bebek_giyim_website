@@ -68,7 +68,7 @@ const AdminLayout = ({ children }) => {
                 className="flex items-center p-2 text-gray-900 rounded-lg  hover:bg-gray-100 group"
               >
                 <FaBox className="w-5 h-auto flex-shrink-0 text-gray-500 transition duration-75  group-hover:text-gray-900" />
-                <span className="ms-3">Products</span>
+                <span className="ms-3">Ürünler</span>
               </Link>
             </li>
             <li>
@@ -77,7 +77,7 @@ const AdminLayout = ({ children }) => {
                 className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group"
               >
                 <BiSolidCategory className="w-5 h-auto flex-shrink-0 text-gray-500 transition duration-75  group-hover:text-gray-900" />
-                <span className="ms-3">Categories</span>
+                <span className="ms-3">Kategoriler</span>
               </Link>
             </li>
             <li>
@@ -86,7 +86,7 @@ const AdminLayout = ({ children }) => {
                 className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group"
               >
                 <FaUser className="w-5 h-auto flex-shrink-0 text-gray-500 transition duration-75  group-hover:text-gray-900" />
-                <span className="ms-3">Users</span>
+                <span className="ms-3">Kullanıcılar</span>
               </Link>
             </li>
             <li>
@@ -95,7 +95,7 @@ const AdminLayout = ({ children }) => {
                 className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group"
               >
                 <FaSignOutAlt className="w-5 h-auto flex-shrink-0 text-gray-500 transition duration-75  group-hover:text-gray-900" />
-                <span className="flex-1 ms-3 whitespace-nowrap">Sign Out</span>
+                <span className="flex-1 ms-3 whitespace-nowrap">Çıkış Yap</span>
               </button>
             </li>
           </ul>
