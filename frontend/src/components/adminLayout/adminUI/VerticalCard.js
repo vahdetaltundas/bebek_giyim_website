@@ -48,7 +48,7 @@ const VerticalCard = ({ product, title,handleDelete }) => {
           <button
             onClick={() =>
               router.push(
-                `/admin/profile/${patchURl}/update-${title}/${product.id}`
+                `/admin/dashboard/products/update-product/${product.id}`
               )
             }
             className=" items-center px-3 py-2 text-sm font-medium text-center text-white bg-emerald-700 rounded-lg hover:bg-emerald-800 focus:ring-4 focus:outline-none focus:ring-emerald-300"
@@ -56,7 +56,7 @@ const VerticalCard = ({ product, title,handleDelete }) => {
             {title} Güncelle
           </button>
           <button
-            onClick={() => handleDelete(product.id)}
+            onClick={() => router.push(`/admin/dashboard/products/product-upload-images/${product.id}`)}
             className=" items-center px-3 py-2 text-sm font-medium text-center text-white bg-amber-700 rounded-lg hover:bg-amber-800 focus:ring-4 focus:outline-none focus:ring-amber-300"
           >
             Ürüne Resim ekle

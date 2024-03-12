@@ -1,9 +1,6 @@
 import ErrorMessage from "@/components/errorMessage/ErrorMessage";
 import { fetchCategories } from "@/pages/api/hello";
-import {
-  addProductFormInitialValue,
-  addProductValidationSchema,
-} from "@/validations/addProductValidation";
+import { addProductValidationSchema } from "@/validations/addProductValidation";
 import axios from "axios";
 import { useFormik } from "formik";
 import Cookies from "js-cookie";
@@ -11,17 +8,25 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-const AddProduct = () => {
+const UpdateProduct = ({ product }) => {
   const [categories, setCategories] = useState([]);
   const router = useRouter();
   const formik = useFormik({
-    initialValues: addProductFormInitialValue,
+    initialValues: {
+      productName: product.productName,
+      price: product.price,
+      ageRange: product.ageRange,
+      packageQuantity: product.packageQuantity,
+      barcode: product.barcode,
+      categoryId: product.categoryId,
+      description: product.description,
+    },
     validationSchema: addProductValidationSchema,
     onSubmit: async (values) => {
-      const token = Cookies.get("adminToken");
+      const token=Cookies.get('adminToken');
       try {
-        await axios.post(
-          `${process.env.NEXT_PUBLIC_API_URL}/products`,
+        await axios.put(
+          `${process.env.NEXT_PUBLIC_API_URL}/products/${product.id}`,
           values,
           {
             headers: {
@@ -30,10 +35,10 @@ const AddProduct = () => {
           }
         );
         router.push("/admin/dashboard/products");
-        toast.success("Ürün başarıyla eklendi!");
+        toast.success("Ürün başarıyla Güncellendi!");
       } catch (error) {
         console.error("Product eklenirken bir hata oluştu", error);
-        toast.error("Product eklenirken hata oluştu");
+        toast.error("Ürün güncellenirken hata oluştu");
       }
     },
   });
@@ -41,9 +46,7 @@ const AddProduct = () => {
     try {
       const response = await fetchCategories();
       setCategories(response.data);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
   useEffect(() => {
     getCategories();
@@ -133,16 +136,12 @@ const AddProduct = () => {
                   value={formik.values.categoryId}
                   onChange={formik.handleChange}
                 >
-                  <option value={0}>Seçiniz</option> {/* Varsayılan değer */}
                   {categories.map((category) => (
                     <option key={category.id} value={category.id}>
                       {category.categoryName}
                     </option>
                   ))}
                 </select>
-                {formik.touched.categoryId && formik.errors.categoryId ? (
-                  <ErrorMessage errorMessage={formik.errors.categoryId} />
-                ) : null}
               </div>
               <div>
                 <label
@@ -212,7 +211,7 @@ const AddProduct = () => {
               type="submit"
               className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
             >
-              Yeni Ürünü Ekle
+              Ürünü Güncelle
             </button>
           </form>
         </div>
@@ -220,5 +219,24 @@ const AddProduct = () => {
     </>
   );
 };
+export async function getServerSideProps({ req, params }) {
+  try {
+    const product = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_URL}/products/${params.id}`
+    );
 
-export default AddProduct;
+    return {
+      props: {
+        product: product ? product.data.data.data : null,
+      },
+    };
+  } catch (err) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+}
+export default UpdateProduct;
