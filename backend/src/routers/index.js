@@ -4,6 +4,7 @@ const {upload, deleteImagesByNames} = require("../middlewares/libs/upload.js");
 const authRouter=require("./authRouter.js");
 const categoryRouter=require("./categoryRouter.js");
 const productRouter=require("./productRouter.js");
+const userRouter=require("./userRouter.js");
 const APIError = require("../utils/errors.js");
 const Response = require("../utils/response.js");
 const { tokenCheckAdmin } = require("../middlewares/validations/auth.js");
@@ -12,6 +13,7 @@ const dbConnection=require("../db/dbConnection.js")
 router.use("/auth",authRouter);
 router.use("/categories",categoryRouter);
 router.use("/products",productRouter);
+router.use("/users",userRouter);
 router.use("/upload/:id",tokenCheckAdmin,function(req,res){
     upload(req,res,async function(err){
         if(err instanceof multer.MulterError){

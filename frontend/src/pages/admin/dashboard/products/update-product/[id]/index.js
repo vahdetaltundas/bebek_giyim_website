@@ -233,7 +233,7 @@ export async function getServerSideProps({ req, params }) {
   } catch (err) {
     return {
       redirect: {
-        destination: "/",
+        destination: "/admin/dashboard",
         permanent: false,
       },
     };
