@@ -46,8 +46,36 @@ const userActivatedRemove=async(req,res)=>{
         return res.status(500).json({ success: false, error: "Server error: Failed to user activation." });
   }
 }
+
+const userDeleteById = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    const [rows, fields] = await dbConnection.execute(
+      "SELECT * FROM users WHERE id=?",
+      [userId]
+    );
+    if (rows.length > 0) {
+      await dbConnection.execute("DELETE FROM users WHERE id = ?", [
+        userId,
+      ]);
+      return new Response().success(res);
+    } else {
+      return new Response().error404(res);
+    }
+  } catch (error) {
+    console.error("User delete error:", error);
+    return res
+      .status(500)
+      .json({
+        success: false,
+        error: "Server error: Failed to delete User.",
+      });
+  }
+};
 module.exports={
     getAllUsers,
     userActivated,
-    userActivatedRemove
+    userActivatedRemove,
+    userDeleteById
 }

@@ -1,6 +1,6 @@
 import {
+  deleteItem,
   fetchUsers,
-  userActivatedSatus,
   userActivatedStatus,
 } from "@/pages/api/hello";
 import Cookies from "js-cookie";
@@ -9,6 +9,17 @@ import { toast } from "react-toastify";
 
 const UsersPage = () => {
   const [users, setUsers] = useState([]);
+  const handleDelete = async (id) => {
+    const token = Cookies.get("adminToken");
+    try {
+      await deleteItem("users", id, token);
+      toast.success("Ürününüz silindi");
+      getUsers();
+    } catch (error) {
+      console.log(error);
+      toast.error("Ürününüz silinemedi!");
+    }
+  };
   const getUsers = async () => {
     const token = Cookies.get("adminToken");
     try {
@@ -33,12 +44,12 @@ const UsersPage = () => {
     getUsers();
   }, []);
   return (
-    <div className="mx-auto max-w-screen-lg px-4 py-8 sm:px-8">
+    <div className="mx-auto max-w-full px-4 py-8 sm:px-8">
       <div className="flex items-center justify-between pb-6">
         <div>
-          <h2 className="font-semibold text-gray-700">User Accounts</h2>
+          <h2 className="font-semibold text-gray-700">Kullanıcılar Listesi</h2>
           <span className="text-xs text-gray-500">
-            View accounts of registered users
+          Kayıtlı kullanıcıların hesaplarını görüntüleyin
           </span>
         </div>
       </div>
@@ -53,6 +64,7 @@ const UsersPage = () => {
                 <th className="px-5 py-3">TelefonNo</th>
                 <th className="px-5 py-3">Aktivasyon Durumu</th>
                 <th className="px-5 py-3">Hesabı Onayla</th>
+                <th className="px-5 py-3">Kullanıcıyı Sil</th>
               </tr>
             </thead>
             <tbody className="text-gray-500">
@@ -107,6 +119,16 @@ const UsersPage = () => {
                         Onay Kaldır
                       </button>
                     )}
+                  </td>
+                  <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                  <button
+                        onClick={() =>
+                          handleDelete(user.id)
+                        }
+                        className="bg-red-600 hover:bg-red-700 text-white text-sm px-4 py-2  border rounded-full"
+                      >
+                        Kullanıcıyı Sil
+                      </button>
                   </td>
                 </tr>
               ))}
