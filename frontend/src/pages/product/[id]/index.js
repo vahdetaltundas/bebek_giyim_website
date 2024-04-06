@@ -2,6 +2,7 @@ import axios from "axios";
 import { parseCookies } from "nookies";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import Link from "next/link";
 
 const Index = ({ product, loginCheck }) => {
   const [imagesUrl, setImagesUrl] = useState([]);
@@ -141,7 +142,7 @@ const Index = ({ product, loginCheck }) => {
                   onClick={()=>addToBasket(product,amount)}
                   disabled={!loginCheck}
                 >
-                  {loginCheck ? "Sepete Ekle" : "Lütfen Giriş Yapın"}
+                  {loginCheck ? "Sepete Ekle" : <Link href="/auth/login">Lütfen Giriş Yapın</Link>}
                 </button>
               </div>
             </div>

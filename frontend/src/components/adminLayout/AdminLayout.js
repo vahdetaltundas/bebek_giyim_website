@@ -1,17 +1,26 @@
 import Link from "next/link";
 import React, { useEffect } from "react";
-import { FaHome, FaBox, FaUser, FaSignOutAlt } from "react-icons/fa";
-import { BiSolidCategory } from "react-icons/bi";
+import { FaSignOutAlt } from "react-icons/fa";
+
 import { useRouter } from "next/router";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 import axios from "axios";
 import { toast } from "react-toastify";
 
+import { useState } from "react";
+
 const AdminLayout = ({ children }) => {
+  const [open, setOpen] = useState(true);
+  const Menus = [
+    { title: "Ana Sayfa", src: "Chart_fill", href: "" },
+    { title: "Ürünler", src: "Chat", href: "products" },
+    { title: "Kategoriler ", src: "Calendar", href: "categories" },
+    { title: "Kullanıcılar", src: "User", gap: true, href: "users" },
+  ];
   const router = useRouter();
-  const tokenCheck=async()=>{
-    const token=Cookies.get('adminToken');
-    const response=await axios.get(
+  const tokenCheck = async () => {
+    const token = Cookies.get("adminToken");
+    const response = await axios.get(
       `${process.env.NEXT_PUBLIC_API_URL}/auth/logincheck`,
       {
         headers: {
@@ -19,95 +28,88 @@ const AdminLayout = ({ children }) => {
         },
       }
     );
-    if(!response.data.data.loginCheck){
-      router.push("/admin")
-    }
-  }
-  
-  useEffect(()=>{
-    tokenCheck();
-  },[])
-  const closeAdminAccount = async () => {
-    if(confirm("Çıkış Yapmak İstediğinizden Eminmisiniz?")) {
-      Cookies.remove('adminToken', { path: '/' });
+    if (!response.data.data.loginCheck) {
       router.push("/admin");
-          toast.success("Admin Panelden Çıkış Yapılcı");
     }
   };
+
+  useEffect(() => {
+    tokenCheck();
+  }, []);
+
+  const closeAdminAccount = async () => {
+    if (confirm("Çıkış Yapmak İstediğinizden Eminmisiniz?")) {
+      Cookies.remove("adminToken", { path: "/" });
+      router.push("/admin");
+      toast.success("Admin Panelden Çıkış Yapılcı");
+    }
+  };
+
   return (
-    <>
-      <aside
-        id="logo-sidebar"
-        className="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
-        aria-label="Sidebar"
+    <div className="flex">
+      <div
+        className={` ${
+          open ? "w-72" : "w-20 "
+        } bg-dark-purple h-screen p-5  pt-8 relative duration-300`}
       >
-        <div className="h-full px-3 py-4 overflow-y-auto bg-gray-100">
-          <Link
-            href="/admin/dashboard"
-            className="flex items-center justify-center ps-2.5 mb-5"
+        <img
+          src="/assets/control.png"
+          className={`absolute cursor-pointer -right-3 top-9 w-7 border-dark-purple
+           border-2 rounded-full  ${!open && "rotate-180"}`}
+          onClick={() => setOpen(!open)}
+        />
+        <div className="flex gap-x-4 items-center">
+          <img
+            src="/assets/logo.png"
+            className={`cursor-pointer duration-500 ${
+              open && "rotate-[360deg]"
+            }`}
+          />
+          <h1
+            className={`text-white origin-left font-medium text-xl duration-200 ${
+              !open && "scale-0"
+            }`}
           >
-            <img
-              src="/images/Logo.png"
-              className="h-10 me-3 sm:h-10"
-              alt="Logo"
-            />
-          </Link>
-          <ul className="space-y-2 font-medium">
-            <li>
-              <Link
-                href="/admin/dashboard"
-                className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group"
-              >
-                <FaHome className="w-5 h-auto flex-shrink-0 text-gray-500 transition duration-75  group-hover:text-gray-900 " />
-                <span className="ms-3">Home</span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/admin/dashboard/products"
-                className="flex items-center p-2 text-gray-900 rounded-lg  hover:bg-gray-100 group"
-              >
-                <FaBox className="w-5 h-auto flex-shrink-0 text-gray-500 transition duration-75  group-hover:text-gray-900" />
-                <span className="ms-3">Ürünler</span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/admin/dashboard/categories"
-                className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group"
-              >
-                <BiSolidCategory className="w-5 h-auto flex-shrink-0 text-gray-500 transition duration-75  group-hover:text-gray-900" />
-                <span className="ms-3">Kategoriler</span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/admin/dashboard/users"
-                className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group"
-              >
-                <FaUser className="w-5 h-auto flex-shrink-0 text-gray-500 transition duration-75  group-hover:text-gray-900" />
-                <span className="ms-3">Kullanıcılar</span>
-              </Link>
-            </li>
-            <li>
-              <button
-                onClick={() => closeAdminAccount()}
-                className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group"
-              >
-                <FaSignOutAlt className="w-5 h-auto flex-shrink-0 text-gray-500 transition duration-75  group-hover:text-gray-900" />
-                <span className="flex-1 ms-3 whitespace-nowrap">Çıkış Yap</span>
-              </button>
-            </li>
-          </ul>
+            Admin Panel
+          </h1>
         </div>
-      </aside>
-      <div className="p-4 sm:ml-64">
-        <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg">
-          {children}
-        </div>
+        <ul className="pt-6">
+          {Menus.map((Menu, index) => (
+            <Link href={`/admin/dashboard/${Menu.href}`} key={index}>
+              <li
+                className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4 
+              ${Menu.gap ? "mt-9" : "mt-2"} ${
+                  index === 0 && "bg-light-white"
+                } `}
+              >
+                <img src={`/assets/${Menu.src}.png`} />
+                <span
+                  className={`${!open && "hidden"} origin-left duration-200`}
+                >
+                  {Menu.title}
+                </span>
+              </li>
+            </Link>
+          ))}
+          <li className="flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4 mt-2 ">
+            <button
+              onClick={() => closeAdminAccount()}
+              className="flex items-center pl-1 "
+            >
+              <FaSignOutAlt className=" w-6 h-auto text-blue-300" />
+              <span
+                className={`${
+                  !open && "hidden"
+                } origin-left duration-200 ml-4 text-white`}
+              >
+                Çıkış Yap
+              </span>
+            </button>
+          </li>
+        </ul>
       </div>
-    </>
+      <div className="h-screen flex-1 p-7">{children}</div>
+    </div>
   );
 };
-
 export default AdminLayout;

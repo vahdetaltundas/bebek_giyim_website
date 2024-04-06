@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 const categories = () => {
-    const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   const getCategories = async () => {
     try {
@@ -37,14 +37,13 @@ const categories = () => {
           <span className="text-xs text-gray-500">
             Kayıtlı kullanıcıların hesaplarını görüntüleyin
           </span>
-          
         </div>
         <Link
-            href="/admin/dashboard/categories/add-categori"
-            className="px-3 py-2 text-sm font-medium text-center text-white bg-orange-400 rounded-lg hover:bg-orange-500 focus:ring-4 focus:outline-none focus:ring-orange-300"
-          >
-            Kategori Ekle
-          </Link>
+          href="/admin/dashboard/categories/add-category"
+          className="px-3 py-2 text-sm font-medium text-center text-white bg-orange-400 rounded-lg hover:bg-orange-500 focus:ring-4 focus:outline-none focus:ring-orange-300"
+        >
+          Kategori Ekle
+        </Link>
       </div>
       <div className="overflow-y-hidden rounded-lg border">
         <div className="overflow-x-auto">
@@ -54,32 +53,40 @@ const categories = () => {
                 <th className="px-5 py-3">ID</th>
                 <th className="px-5 py-3">Kategori Adı</th>
                 <th className="px-5 py-3">Kategoriyi Sil</th>
+                <th className="px-5 py-3">Kategoriyi Güneclle</th>
               </tr>
             </thead>
             <tbody className="text-gray-500">
-            {categories.map((category)=>(<tr>
-                <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                  <p className="whitespace-no-wrap">{category.id}</p>
-                </td>
-                <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                  <div className="flex items-center">
-                    <p className="whitespace-no-wrap">{category.categoryName}</p>
-                  </div>
-                </td>
-                <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                <button
-                        onClick={() =>
-                          handleDelete(category.id)
-                        }
-                        className="bg-red-600 hover:bg-red-700 text-white text-sm px-4 py-2  border rounded-full"
-                      >
-                        Kategoriyi Sil
-                      </button>
-                </td>
-                
-              </tr>
+              {categories.map((category) => (
+                <tr>
+                  <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                    <p className="whitespace-no-wrap">{category.id}</p>
+                  </td>
+                  <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                    <div className="flex items-center">
+                      <p className="whitespace-no-wrap">
+                        {category.categoryName}
+                      </p>
+                    </div>
+                  </td>
+                  <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                    <button
+                      onClick={() => handleDelete(category.id)}
+                      className="bg-red-600 hover:bg-red-700 text-white text-sm px-4 py-2  border rounded-full"
+                    >
+                      Kategoriyi Sil
+                    </button>
+                  </td>
+                  <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                    <Link
+                      href={`/admin/dashboard/categories/update-category/${category.id}`}
+                      className="bg-orange-600 hover:bg-orange-700 text-white text-sm px-4 py-2  border rounded-full"
+                    >
+                      Kategoriyi Güneclle
+                    </Link>
+                  </td>
+                </tr>
               ))}
-              
             </tbody>
           </table>
         </div>
