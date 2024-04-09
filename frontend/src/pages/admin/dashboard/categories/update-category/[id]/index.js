@@ -1,6 +1,5 @@
 import ErrorMessage from "@/components/errorMessage/ErrorMessage";
 import {
-  addCategoryFormInitialValue,
   addCategoryValidationSchema,
 } from "@/validations/addCategoryValidation";
 import axios from "axios";

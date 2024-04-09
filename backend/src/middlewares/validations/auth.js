@@ -76,8 +76,29 @@ const tokenCheckAdmin = async (req, res, next) => {
         next(error); // Hata middleware'e yönlendirilir
     }
 }
+const tokenCheckUser = async (req, res, next) => {
+    try {
+        const headerToken = req.headers.authorization && req.headers.authorization.startsWith("Bearer ");
+        if (!headerToken)
+            throw new APIError("Geçersiz Oturum Lütfen Oturum Açın", 401);
+
+        const token = req.headers.authorization.split(" ")[1];
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+        const [rows, fields] = await dbConnection.execute('SELECT full_name,company_name, email,phone_number FROM Users WHERE id = ? AND role = ?', [decoded.sub, decoded.role]);
+        
+        if (!rows[0])
+            throw new APIError("Geçersiz Token", 401);
+
+        req.user = rows[0];
+        next();
+    } catch (error) {
+        next(error); // Hata middleware'e yönlendirilir
+    }
+}
 module.exports = {
     createToken,
     tokenCheck,
-    tokenCheckAdmin
+    tokenCheckAdmin,
+    tokenCheckUser
 }

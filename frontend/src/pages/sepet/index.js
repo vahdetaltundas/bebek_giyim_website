@@ -1,4 +1,5 @@
 import BasketProductCard from "@/components/layout/ui/BasketProductCard";
+import OrderDelivery from "@/components/layout/ui/OrderDelivery";
 import axios from "axios";
 import Link from "next/link";
 import { parseCookies } from "nookies";
@@ -7,7 +8,7 @@ import React, { useEffect, useState } from "react";
 const IndexPage = ({ loginCheck }) => {
   const [baskets, setBaskets] = useState([]);
   const [totalPrice, setTotalPrice] = useState('0.00');
-
+  const [isProductModal, setIsProductModal] = useState(false);
   useEffect(() => {
     const savedBaskets = JSON.parse(localStorage.getItem('baskets')) || [];
     setBaskets(savedBaskets);
@@ -20,7 +21,7 @@ const IndexPage = ({ loginCheck }) => {
     localStorage.setItem('baskets', JSON.stringify(updatedBasket));
     updateTotalPrice(updatedBasket);
   };
-
+  
   const handleAmountChange = (productId, newAmount) => {
     const updatedBasket = baskets.map(item => {
       if (item.product.id === productId) {
@@ -49,6 +50,7 @@ const IndexPage = ({ loginCheck }) => {
   return (
     <>
       {loginCheck ? (
+        <>
         <div className="h-max bg-gray-100 pt-16">
           <h1 className="mb-10 text-center text-2xl font-bold">Sepet</h1>
           <div className="mx-auto max-w-5xl justify-center px-6 md:flex md:space-x-6 xl:px-0">
@@ -74,12 +76,14 @@ const IndexPage = ({ loginCheck }) => {
                   <p className="mb-1 text-lg font-bold">{totalPrice}</p>
                 </div>
               </div>
-              <button className="mt-6 w-full rounded-md bg-blue-500 py-1.5 font-medium text-blue-50 hover:bg-blue-600">
+              <button className="mt-6 w-full rounded-md bg-blue-500 py-1.5 font-medium text-blue-50 hover:bg-blue-600" onClick={() => setIsProductModal(true)}>
                 Sipariş Ver
               </button>
             </div>
           </div>
         </div>
+        {isProductModal && <OrderDelivery baskets={baskets} totalPrice={totalPrice} setIsProductModal={setIsProductModal} />}
+        </>
       ) : (
         <div className="max-h-screen min-h-80 bg-gray-100 pt-16 flex flex-col items-center justify-center">
           <h1 className="flex items-center mb-6 text-2xl font-semibold text-gray-900">
