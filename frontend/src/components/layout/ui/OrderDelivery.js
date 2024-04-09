@@ -29,7 +29,7 @@ const OrderDelivery = ({ setIsProductModal, baskets, totalPrice }) => {
                 let message = baskets
                   .map(
                     (basket, index) =>
-                      `${index + 1}. Ürün Bilgileri=\n   Ürün adı= ${
+                      `${index + 1}. Ürün Bilgileri:\n   Ürün adı= ${
                         basket.product.productName
                       }\n   Ürün Barkod No= ${
                         basket.product.barcode

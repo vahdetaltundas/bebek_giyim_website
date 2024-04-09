@@ -3,6 +3,7 @@ import { parseCookies } from "nookies";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import Link from "next/link";
+import Image from "next/image";
 
 const Index = ({ product, loginCheck }) => {
   const [imagesUrl, setImagesUrl] = useState([]);
@@ -37,15 +38,17 @@ const Index = ({ product, loginCheck }) => {
     setAmount(amount + 1);
   };
 
-  
-  const addToBasket = (product,amount) => {
+  const addToBasket = (product, amount) => {
     const currentBaskets = JSON.parse(localStorage.getItem("baskets")) || [];
     // Eğer ürün varsa tekrar eklememek için yazılan bir kontrol
     if (currentBaskets.find((item) => item.product.id === product.id)) {
       toast.warn("Ürün zaten sepete eklendi.");
       return;
     } else {
-      const updatedBaskets = [...currentBaskets, {product:product,amount:amount,productImage:imagesUrl[0]}];
+      const updatedBaskets = [
+        ...currentBaskets,
+        { product: product, amount: amount, productImage: imagesUrl[0] },
+      ];
       toast.success("Ürün başarıyla sepete eklendi!");
       localStorage.setItem("baskets", JSON.stringify(updatedBaskets));
     }
@@ -58,10 +61,13 @@ const Index = ({ product, loginCheck }) => {
             <div className="sticky top-0 overflow-hidden">
               <div className="relative mb-6 lg:mb-10 lg:h-96">
                 {imagesUrl.length > 0 && (
-                  <img
-                    className="object-contain w-full lg:h-full"
-                    src={`http://localhost:3001/uploads/${imagesUrl[selectFoto]}`}
-                    alt=""
+                  <Image
+                    src={`${process.env.NEXT_PUBLIC_API_IMG_URL}/${imagesUrl[selectFoto]}`}
+                    alt="product-image"
+                    width={0}
+                    height={0}
+                    sizes="100vw"
+                    className="object-contain w-full h-full"
                   />
                 )}
               </div>
@@ -76,10 +82,13 @@ const Index = ({ product, loginCheck }) => {
                         setSelectFoto(index);
                       }}
                     >
-                      <img
-                        className="object-contain w-full lg:h-28"
-                        src={`http://localhost:3001/uploads/${image}`}
-                        alt=""
+                      <Image
+                        src={`${process.env.NEXT_PUBLIC_API_IMG_URL}/${image}`}
+                        alt="product-image"
+                        width={0}
+                        height={0}
+                        sizes="100vw"
+                        className="object-contain w-full h-full"
                       />
                     </div>
                   </div>
@@ -139,10 +148,14 @@ const Index = ({ product, loginCheck }) => {
                 </div>
                 <button
                   className="bg-violet-800 text-white font-semibold py-3 px-10 rounded-xl h-full"
-                  onClick={()=>addToBasket(product,amount)}
+                  onClick={() => addToBasket(product, amount)}
                   disabled={!loginCheck}
                 >
-                  {loginCheck ? "Sepete Ekle" : <Link href="/auth/login">Lütfen Giriş Yapın</Link>}
+                  {loginCheck ? (
+                    "Sepete Ekle"
+                  ) : (
+                    <Link href="/auth/login">Lütfen Giriş Yapın</Link>
+                  )}
                 </button>
               </div>
             </div>

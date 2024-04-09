@@ -6,15 +6,17 @@ import { useRouter } from "next/router";
 import ErrorMessage from "@/components/errorMessage/ErrorMessage";
 import axios from "axios";
 import { toast } from "react-toastify";
+import Cookies from "cookies";
+import React from "react"; // React ekledim
 
-const register = () => {
+const Register = () => { // Fonksiyon adını değiştirdim
   const router = useRouter();
   const formik = useFormik({
     initialValues: registerInitialValues,
     validationSchema: registerValidationSchema,
     onSubmit: async (values) => {
       try {
-        const response=await axios.post("http://localhost:3001/api/auth/register",{
+        const response=await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`,{
           email:values.email,
           password:values.password,
           fullName:values.fullName,
@@ -196,27 +198,19 @@ const register = () => {
   );
 };
 export async function getServerSideProps(context) {
-  // HTTP isteği başlıklarını al
   const { req } = context;
+  const cookies = new Cookies(req, null);
+  const token = cookies.get("token");
 
-  // Cookie bilgilerini al
-  const cookieHeader = req.headers.cookie;
-
-  // Eğer cookie bilgisi yoksa
-  if (!cookieHeader) {
-    return {
-      props: {},
-    };
-  }
-
-  // Cookie bilgisini ayrıştır
-  const cookies = cookieHeader.split(";").reduce((cookies, cookie) => {
-    const [name, value] = cookie.trim().split("=").map(decodeURIComponent);
-    cookies[name] = value;
-    return cookies;
-  }, {});
-
-  if (cookies.token) {
+  const response = await axios.get(
+    `${process.env.NEXT_PUBLIC_API_URL}/auth/logincheck`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  if (response.data.data.loginCheck) {
     return {
       redirect: {
         destination: "/",
@@ -230,4 +224,4 @@ export async function getServerSideProps(context) {
     };
   }
 }
-export default register;
+export default Register; // Bileşen adını export ettik

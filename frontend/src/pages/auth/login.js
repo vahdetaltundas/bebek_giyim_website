@@ -4,12 +4,15 @@ import {
   loginValidationSchema,
 } from "@/validations/loginValidation";
 import axios from "axios";
+import Cookies from "cookies";
 import { useFormik } from "formik";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FaBaby } from "react-icons/fa";
 import { toast } from "react-toastify";
-const login = () => {
+import React from "react"; 
+
+const Login = () => { 
   const router = useRouter();
   const formik = useFormik({
     initialValues: loginInitialValues,
@@ -130,28 +133,22 @@ const login = () => {
     </section>
   );
 };
+
 export async function getServerSideProps(context) {
-  // HTTP isteği başlıklarını al
   const { req } = context;
+  const cookies = new Cookies(req, null);
 
-  // Cookie bilgilerini al
-  const cookieHeader = req.headers.cookie;
+  const token = cookies.get("token");
 
-  // Eğer cookie bilgisi yoksa
-  if (!cookieHeader) {
-    return {
-      props: {},
-    };
-  }
-
-  // Cookie bilgisini ayrıştır
-  const cookies = cookieHeader.split(";").reduce((cookies, cookie) => {
-    const [name, value] = cookie.trim().split("=").map(decodeURIComponent);
-    cookies[name] = value;
-    return cookies;
-  }, {});
-
-  if (cookies.token) {
+  const response = await axios.get(
+    `${process.env.NEXT_PUBLIC_API_URL}/auth/logincheck`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  if (response.data.data.loginCheck) {
     return {
       redirect: {
         destination: "/",
@@ -165,4 +162,5 @@ export async function getServerSideProps(context) {
     };
   }
 }
-export default login;
+
+export default Login;

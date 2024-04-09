@@ -4,15 +4,17 @@ import { useRouter } from "next/router";
 import React from "react";
 import { toast } from "react-toastify";
 
-const index = () => {
+const Dashboard = () => {
   const router = useRouter();
+
   const closeAdminAccount = async () => {
-    if (confirm("Çıkış Yapmak İstediğinizden Eminmisiniz?")) {
+    if (confirm("Çıkış Yapmak İstediğinizden Emin misiniz?")) {
       Cookies.remove("adminToken", { path: "/" });
       router.push("/admin");
-      toast.success("Admin Panelden Çıkış Yapılcı");
+      toast.success("Admin Panelden Çıkış Yapıldı");
     }
   };
+
   return (
     <>
       <div className="grid sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
@@ -20,26 +22,26 @@ const index = () => {
           cardUrl="/admin/dashboard/products"
           title="Ürünler"
           desc="Bütün ürünleri listele"
-          imgUrl="https://i.imgur.com/td4w2e7.jpeg"
+          imgUrl="/images/product.jpg"
         />
         <HorizontalCard
           cardUrl="/admin/dashboard/categories"
           title="Kategoriler"
           desc="Bütün kategorileri listele"
-          imgUrl="https://i.imgur.com/tgGv8FM.png"
+          imgUrl="/images/category.png"
         />
         <HorizontalCard
           cardUrl="/admin/dashboard/users"
           title="Kullanıcılar"
           desc="Bütün kullanıcıları listele"
-          imgUrl="https://i.imgur.com/3oXhw1X.jpeg"
+          imgUrl="/images/user.jpg"
         />
-        <button onClick={() => closeAdminAccount()}>
+        <button onClick={closeAdminAccount}>
           <HorizontalCard
             cardUrl=""
             title="Çıkış Yap"
             desc="Admin panelden çıkış yap."
-            imgUrl="https://i.imgur.com/DYqXITr.png"
+            imgUrl="/images/exit.png"
           />
         </button>
       </div>
@@ -47,4 +49,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Dashboard;

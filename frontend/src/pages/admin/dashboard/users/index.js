@@ -25,7 +25,6 @@ const UsersPage = () => {
     try {
       const response = await fetchUsers(token);
       setUsers(response.data);
-      console.log(response.data);
     } catch (error) {
       console.log(error);
     }

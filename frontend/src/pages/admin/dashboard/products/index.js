@@ -5,8 +5,9 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-const products = () => {
+const Products = () => {
   const [products, setProducts] = useState([]);
+
   const getProducts = async () => {
     try {
       const response = await fetchProducts();
@@ -15,7 +16,9 @@ const products = () => {
       console.log(error);
     }
   };
+
   const token = Cookies.get("adminToken");
+
   const handleDelete = async (id) => {
     try {
       await deleteItem("products", id, token);
@@ -26,9 +29,11 @@ const products = () => {
       toast.error("Ürününüz silinemedi!");
     }
   };
+
   useEffect(() => {
     getProducts();
   }, []);
+
   return (
     <div className="grid grid-cols-6 gap-5">
       <Link
@@ -37,7 +42,7 @@ const products = () => {
       >
         Ürün Ekle
       </Link>
-      <div className="col-span-6 grid justify-center md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+      <div className="col-span-6 grid justify-center md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
         {products.map((product) => (
           <VerticalCard key={product.id} product={product} title="Ürünü" handleDelete={handleDelete} />
         ))}
@@ -46,4 +51,4 @@ const products = () => {
   );
 };
 
-export default products;
+export default Products;

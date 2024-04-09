@@ -1,11 +1,11 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-
-const VerticalCard = ({ product, title,handleDelete }) => {
+import Image from "next/image";
+const VerticalCard = ({ product, title, handleDelete }) => {
   const router = useRouter();
   const [imagesUrl, setImagesUrl] = useState([]);
-  
+
   const getImages = async () => {
     try {
       const response = await axios.get(
@@ -24,19 +24,24 @@ const VerticalCard = ({ product, title,handleDelete }) => {
     getImages();
   }, [product.id]);
   return (
-    <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow">
+    <div className="max-w-[300px] bg-white border border-gray-200 rounded-lg shadow">
       <a href="#">
         {imagesUrl.length > 0 ? (
-          <img
+          <Image
             className="rounded-t-lg"
-            src={`http://localhost:3001/uploads/${imagesUrl[0]}`}
-            alt=""
+            alt="product-image"
+            src={`${process.env.NEXT_PUBLIC_API_IMG_URL}/${imagesUrl[0]}`}
+            width={250}
+            height={250}
           />
-        ):<img
-        className="rounded-t-lg"
-        src="/images/resim-yok.jpg"
-        alt=""
-      />}
+        ) : (
+          <Image
+            className="rounded-t-lg"
+            src="/images/resim-yok.jpg"
+            width={250}
+            height={250}
+          />
+        )}
       </a>
       <div className="p-5">
         <a href="#">
@@ -56,7 +61,11 @@ const VerticalCard = ({ product, title,handleDelete }) => {
             {title} Güncelle
           </button>
           <button
-            onClick={() => router.push(`/admin/dashboard/products/product-upload-images/${product.id}`)}
+            onClick={() =>
+              router.push(
+                `/admin/dashboard/products/product-upload-images/${product.id}`
+              )
+            }
             className=" items-center px-3 py-2 text-sm font-medium text-center text-white bg-amber-700 rounded-lg hover:bg-amber-800 focus:ring-4 focus:outline-none focus:ring-amber-300"
           >
             Ürüne Resim ekle

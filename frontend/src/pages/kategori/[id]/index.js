@@ -3,26 +3,29 @@ import { fetchProductWithCategoryID } from "@/pages/api/hello";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
-const index = ({ category }) => {
-    const [productWithCategory,setProductWithCategory]=useState([]);
-    const getProducts=async()=>{
-        try {
-            const response=await fetchProductWithCategoryID(category.id);
-            setProductWithCategory(response.data);
-        } catch (error) {
-            console.log(error);
-        }
+const Index = ({ category }) => {
+  const [productWithCategory, setProductWithCategory] = useState([]);
+  
+  const getProducts = async () => {
+    try {
+      const response = await fetchProductWithCategoryID(category.id);
+      setProductWithCategory(response.data);
+    } catch (error) {
+      console.log(error);
     }
-    useEffect(()=>{
-        getProducts();
-    },[category])
+  };
+  
+  useEffect(() => {
+    getProducts();
+  }, [category]);
+
   return (
     <>
       <div className="container mx-auto">
         <h1 className="p-5 text-4xl text-slate-700 mb-10">
           Kategori: {category.categoryName}
         </h1>
-        <div className="mt-20 grid gird-cols-2 md:grid-cols-4 gap-5 mx-5">
+        <div className="mt-20 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5 mx-5">
           {productWithCategory.map((product) => (
             <ProductCard product={product} key={product.id} />
           ))}
@@ -31,6 +34,7 @@ const index = ({ category }) => {
     </>
   );
 };
+
 export async function getServerSideProps({ req, params }) {
   try {
     const categoryResponse = await axios.get(
@@ -54,4 +58,4 @@ export async function getServerSideProps({ req, params }) {
   }
 }
 
-export default index;
+export default Index; 

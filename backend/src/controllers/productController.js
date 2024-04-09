@@ -126,16 +126,22 @@ const productDeleteById = async (req, res) => {
   try {
     const productId = req.params.id;
 
+    // Ürüne ait görüntüleri sil
+    await dbConnection.execute("DELETE FROM productimage WHERE productId = ?", [
+      productId,
+    ]);
+
+    // Ürünü sil
     const [rows, fields] = await dbConnection.execute(
-      "SELECT * FROM product WHERE id=?",
+      "DELETE FROM product WHERE id = ?",
       [productId]
     );
-    if (rows.length > 0) {
-      await dbConnection.execute("DELETE FROM product WHERE id = ?", [
-        productId,
-      ]);
+
+    // Silme işlemi başarılıysa
+    if (rows.affectedRows > 0) {
       return new Response().success(res);
     } else {
+      // Ürün bulunamadıysa
       return new Response().error404(res);
     }
   } catch (error) {

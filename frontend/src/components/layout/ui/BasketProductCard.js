@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { MdOutlineDelete } from "react-icons/md";
+import Image from 'next/image'
+
 const BasketProductCard = ({
   product,
   baskets,
@@ -36,10 +38,13 @@ const BasketProductCard = ({
 
   return (
     <>
-      <img
-        src={`http://localhost:3001/uploads/${product.productImage}`}
+      <Image
+        src={`${process.env.NEXT_PUBLIC_API_IMG_URL}/${product.productImage}`}
         alt="product-image"
-        className="w-full rounded-lg sm:w-40"
+        width={0}
+        height={0}
+        sizes="100vw"
+        className="rounded-lg w-[10rem] h-auto"
       />
       <div className="sm:ml-4 sm:flex sm:w-full sm:justify-between">
         <div className="mt-5 sm:mt-0">

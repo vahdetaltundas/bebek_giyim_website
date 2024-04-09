@@ -1,13 +1,11 @@
 import Link from "next/link";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { FaSignOutAlt } from "react-icons/fa";
-
+import Image from "next/image";
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { toast } from "react-toastify";
-
-import { useState } from "react";
 
 const AdminLayout = ({ children }) => {
   const [open, setOpen] = useState(true);
@@ -35,7 +33,7 @@ const AdminLayout = ({ children }) => {
 
   useEffect(() => {
     tokenCheck();
-  }, []);
+  }, [tokenCheck]); 
 
   const closeAdminAccount = async () => {
     if (confirm("Çıkış Yapmak İstediğinizden Eminmisiniz?")) {
@@ -52,15 +50,22 @@ const AdminLayout = ({ children }) => {
           open ? "w-72" : "w-20 "
         } bg-dark-purple h-screen p-5  pt-8 relative duration-300`}
       >
-        <img
+        <Image
           src="/assets/control.png"
-          className={`absolute cursor-pointer -right-3 top-9 w-7 border-dark-purple
-           border-2 rounded-full  ${!open && "rotate-180"}`}
+          alt="Control Icon" 
+          width={25}
+          height={25}
+          className={`absolute cursor-pointer -right-3 top-9 w-7 border-dark-purple border-2 rounded-full ${
+            !open && "rotate-180"
+          }`}
           onClick={() => setOpen(!open)}
         />
         <div className="flex gap-x-4 items-center">
-          <img
+          <Image
             src="/assets/logo.png"
+            alt="Logo" 
+            width={25}
+            height={25}
             className={`cursor-pointer duration-500 ${
               open && "rotate-[360deg]"
             }`}
@@ -82,7 +87,7 @@ const AdminLayout = ({ children }) => {
                   index === 0 && "bg-light-white"
                 } `}
               >
-                <img src={`/assets/${Menu.src}.png`} />
+                <Image src={`/assets/${Menu.src}.png`} alt="icone" width={25} height={25} />
                 <span
                   className={`${!open && "hidden"} origin-left duration-200`}
                 >

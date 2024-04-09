@@ -4,7 +4,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-const categories = () => {
+const Categories = () => {
   const [categories, setCategories] = useState([]);
 
   const getCategories = async () => {
@@ -15,6 +15,7 @@ const categories = () => {
       console.log(error);
     }
   };
+
   const handleDelete = async (id) => {
     const token = Cookies.get("adminToken");
     try {
@@ -26,9 +27,11 @@ const categories = () => {
       toast.error("Kategori silinemedi!");
     }
   };
+
   useEffect(() => {
     getCategories();
   }, []);
+
   return (
     <div className="mx-auto max-w-full px-4 py-8 sm:px-8">
       <div className="flex items-center justify-between pb-6">
@@ -58,7 +61,7 @@ const categories = () => {
             </thead>
             <tbody className="text-gray-500">
               {categories.map((category) => (
-                <tr>
+                <tr key={category.id}>
                   <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                     <p className="whitespace-no-wrap">{category.id}</p>
                   </td>
@@ -95,4 +98,4 @@ const categories = () => {
   );
 };
 
-export default categories;
+export default Categories;

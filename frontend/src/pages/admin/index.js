@@ -1,4 +1,4 @@
-import ErrorMessage from '@/components/errorMessage/ErrorMessage'
+import ErrorMessage from '@/components/errorMessage/ErrorMessage';
 import { loginInitialValues, loginValidationSchema } from '@/validations/loginValidation';
 import axios from 'axios';
 import { useFormik } from 'formik';
@@ -8,14 +8,13 @@ import React from 'react'
 import { FaBaby } from 'react-icons/fa'
 import { toast } from 'react-toastify';
 
-const index = () => {
+const Index = () => {
   const router = useRouter();
   const formik = useFormik({
     initialValues: loginInitialValues,
     validationSchema: loginValidationSchema,
     onSubmit: async (values) => {
       try {
-
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_API_URL}/auth/adminLogin`,
           {
@@ -34,6 +33,7 @@ const index = () => {
       }
     },
   });
+
   return (
     <section
       className="bg-gray-50 p-10"
@@ -114,6 +114,7 @@ const index = () => {
     </section>
   )
 }
+
 export async function getServerSideProps({ req }) {
   const cookies = parseCookies({ req });
   const token = cookies.adminToken || null;
@@ -146,4 +147,5 @@ export async function getServerSideProps({ req }) {
     };
   }
 }
-export default index
+
+export default Index;

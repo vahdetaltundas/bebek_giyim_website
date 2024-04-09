@@ -4,12 +4,16 @@ import {
   forgetPasswordValidationSchema,
 } from "@/validations/forgetPasswordValidation";
 import axios from "axios";
+import Cookies from "cookies";
 import { useFormik } from "formik";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FaBaby } from "react-icons/fa";
 import { toast } from "react-toastify";
-const forgetpassword = () => {
+import React from "react"; // React ekledim
+
+const ForgetPassword = () => {
+  // Fonksiyon adını değiştirdim
   const router = useRouter();
   const formik = useFormik({
     initialValues: forgetPasswordInitialValues,
@@ -17,7 +21,7 @@ const forgetpassword = () => {
     onSubmit: async (values) => {
       try {
         const response = await axios.post(
-          "http://localhost:3001/api/auth/forget-password",
+          `${process.env.NEXT_PUBLIC_API_URL}/auth/forget-password`,
           {
             email: values.email,
           }
@@ -98,28 +102,22 @@ const forgetpassword = () => {
     </section>
   );
 };
+
 export async function getServerSideProps(context) {
-  // HTTP isteği başlıklarını al
   const { req } = context;
 
-  // Cookie bilgilerini al
-  const cookieHeader = req.headers.cookie;
+  const cookies = new Cookies(req, null);
+  const token = cookies.get("token");
 
-  // Eğer cookie bilgisi yoksa
-  if (!cookieHeader) {
-    return {
-      props: {},
-    };
-  }
-
-  // Cookie bilgisini ayrıştır
-  const cookies = cookieHeader.split(";").reduce((cookies, cookie) => {
-    const [name, value] = cookie.trim().split("=").map(decodeURIComponent);
-    cookies[name] = value;
-    return cookies;
-  }, {});
-
-  if (cookies.token) {
+  const response = await axios.get(
+    `${process.env.NEXT_PUBLIC_API_URL}/auth/logincheck`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  if (response.data.data.loginCheck) {
     return {
       redirect: {
         destination: "/",
@@ -133,4 +131,5 @@ export async function getServerSideProps(context) {
     };
   }
 }
-export default forgetpassword;
+
+export default ForgetPassword;

@@ -3,10 +3,14 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaUser, FaFacebook, FaInstagram } from "react-icons/fa";
 import { SlBasket } from "react-icons/sl";
-
-const Header = () => {
+import { IoMdExit } from "react-icons/io";
+import { useRouter } from "next/router";
+import { toast } from "react-toastify";
+import Cookies from "js-cookie";
+import Image from "next/image";
+const Header = ({ loginCheck }) => {
   const [categories, setCategories] = useState([]);
-
+  const router = useRouter();
   const getCategories = async () => {
     try {
       const response = await fetchCategories();
@@ -18,23 +22,40 @@ const Header = () => {
   useEffect(() => {
     getCategories();
   }, []);
+  const closeUserAccount = async () => {
+    if (confirm("Çıkış Yapmak İstediğinizden Eminmisiniz?")) {
+      Cookies.remove("token", { path: "/" });
+      router.push("/auth/login");
+      toast.success("Başarılı bir şekilde çıkış yaptınız.");
+    }
+  };
   return (
     <header className="shadow-md bg-white font-sans">
       <section className="flex items-center lg:justify-center max-sm:flex-col relative py-1 px-10 border-gray-200 border-b lg:min-h-[80px] max-lg:min-h-[60px]">
         <Link href="/" className="max-md:w-full max-sm:mb-3">
-          <img
+          <Image
             src="/images/Logo.png"
             alt="logo"
-            className="md:w-[160px] w-36"
+            width={0}
+            height={0}
+            sizes="100vw"
+            className="m-2 w-[10rem] h-auto"
           />
         </Link>
         <div className="md:absolute md:right-10 flex items-center max-md:ml-auto">
           <FaFacebook className="w-6 h-6 mr-6" />
           <FaInstagram className="w-6 h-6 mr-6" />
           <div className="inline-block border-gray-300 border-l-2 pl-6 cursor-pointer">
-            <Link href="/auth/login">
-              <FaUser className="  w-6 h-6" />
-            </Link>
+            {loginCheck ? (
+              <IoMdExit
+                onClick={() => closeUserAccount()}
+                className="  w-6 h-6"
+              />
+            ) : (
+              <Link href="/auth/login">
+                <FaUser className="  w-6 h-6" />
+              </Link>
+            )}
           </div>
           <Link href="/sepet">
             <SlBasket className="ml-5 w-6 h-6" />
