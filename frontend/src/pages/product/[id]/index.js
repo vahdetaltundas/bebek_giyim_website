@@ -1,6 +1,6 @@
 import axios from "axios";
 import { parseCookies } from "nookies";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import Link from "next/link";
 import Image from "next/image";
@@ -9,24 +9,25 @@ const Index = ({ product, loginCheck }) => {
   const [imagesUrl, setImagesUrl] = useState([]);
   const [selectFoto, setSelectFoto] = useState(0);
   const [amount, setAmount] = useState(1);
-  useEffect(() => {
-    const getImages = async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/products/image/${product.id}`
-        );
-        const imagesArray = response.data.data[0].imageUrl.split(",");
-        const clearImages = imagesArray.map((image) => {
-          return image.replace(/[\[\]"]/g, "");
-        });
-        setImagesUrl(clearImages);
-      } catch (error) {
-        console.log(error);
-      }
-    };
 
-    getImages();
+  const getImages = useCallback(async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/products/image/${product.id}`
+      );
+      const imagesArray = response.data.data[0].imageUrl.split(",");
+      const clearImages = imagesArray.map((image) => {
+        return image.replace(/[\[\]"]/g, "");
+      });
+      setImagesUrl(clearImages);
+    } catch (error) {
+      console.log(error);
+    }
   }, [product.id]);
+
+  useEffect(() => {
+    getImages();
+  }, [getImages]);
 
   const handleDecrement = () => {
     if (amount > 1) {
@@ -40,7 +41,6 @@ const Index = ({ product, loginCheck }) => {
 
   const addToBasket = (product, amount) => {
     const currentBaskets = JSON.parse(localStorage.getItem("baskets")) || [];
-    // Eğer ürün varsa tekrar eklememek için yazılan bir kontrol
     if (currentBaskets.find((item) => item.product.id === product.id)) {
       toast.warn("Ürün zaten sepete eklendi.");
       return;
@@ -53,6 +53,7 @@ const Index = ({ product, loginCheck }) => {
       localStorage.setItem("baskets", JSON.stringify(updatedBaskets));
     }
   };
+  
   return (
     <section className="py-10 font-poppins">
       <div className="max-w-6xl px-4 mx-auto">

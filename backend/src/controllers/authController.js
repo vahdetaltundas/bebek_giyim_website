@@ -109,7 +109,7 @@ const forgetPassword = async (req, res) => {
 
         const resetCode = crypto.randomBytes(4).toString("hex");
         await sendEmail({
-            from: "baseapitest@outlook.com",
+            from: process.env.EMAIL_USER,
             to: rows[0].email, 
             subject: "Şifre Yenileme",
             text: `Şifreniz yenilenmiştir. Yeni şifreniz: ${resetCode}`

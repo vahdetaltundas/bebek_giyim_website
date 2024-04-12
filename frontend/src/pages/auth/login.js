@@ -40,7 +40,7 @@ const Login = () => {
     <section
       className="bg-gray-50 p-10"
       style={{
-        backgroundImage: `url('/images/resim.jpg')`,
+        backgroundImage: `url('/images/resim.png')`,
         backgroundPosition: "center",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",

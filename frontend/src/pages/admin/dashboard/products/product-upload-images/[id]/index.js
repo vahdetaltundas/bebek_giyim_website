@@ -23,10 +23,8 @@ const UploadImages = () => {
       }
     });
 
-    // Yetkilendirme tokeni
     const token = Cookies.get("adminToken");
 
-    // API isteği için başlık oluştur
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,

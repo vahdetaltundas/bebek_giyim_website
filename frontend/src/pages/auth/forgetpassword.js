@@ -10,10 +10,9 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { FaBaby } from "react-icons/fa";
 import { toast } from "react-toastify";
-import React from "react"; // React ekledim
+import React from "react"; 
 
 const ForgetPassword = () => {
-  // Fonksiyon adını değiştirdim
   const router = useRouter();
   const formik = useFormik({
     initialValues: forgetPasswordInitialValues,
@@ -37,7 +36,7 @@ const ForgetPassword = () => {
     <section
       className="bg-gray-50 p-10"
       style={{
-        backgroundImage: `url('/images/resim.jpg')`,
+        backgroundImage: `url('/images/resim.png')`,
         backgroundPosition: "center",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",

@@ -1,12 +1,14 @@
 import axios from "axios";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
+
 const VerticalCard = ({ product, title, handleDelete }) => {
   const router = useRouter();
   const [imagesUrl, setImagesUrl] = useState([]);
 
-  const getImages = async () => {
+  // useCallback ile getImages fonksiyonunu sarmalayarak sabit referans sağlıyoruz.
+  const getImages = useCallback(async () => {
     try {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_API_URL}/products/image/${product.id}`
@@ -19,10 +21,12 @@ const VerticalCard = ({ product, title, handleDelete }) => {
     } catch (error) {
       console.log(error);
     }
-  };
+  }, [product.id]); 
+
   useEffect(() => {
     getImages();
-  }, [product.id]);
+  }, [getImages]); 
+
   return (
     <div className="max-w-[300px] bg-white border border-gray-200 rounded-lg shadow">
       <a href="#">
@@ -37,6 +41,7 @@ const VerticalCard = ({ product, title, handleDelete }) => {
         ) : (
           <Image
             className="rounded-t-lg"
+            alt="placeholder-image"
             src="/images/resim-yok.jpg"
             width={250}
             height={250}

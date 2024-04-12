@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { FaSignOutAlt } from "react-icons/fa";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -16,7 +16,7 @@ const AdminLayout = ({ children }) => {
     { title: "Kullanıcılar", src: "User", gap: true, href: "users" },
   ];
   const router = useRouter();
-  const tokenCheck = async () => {
+  const tokenCheck = useCallback(async () => {
     const token = Cookies.get("adminToken");
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_API_URL}/auth/logincheck`,
@@ -29,7 +29,7 @@ const AdminLayout = ({ children }) => {
     if (!response.data.data.loginCheck) {
       router.push("/admin");
     }
-  };
+  }, [router]);
 
   useEffect(() => {
     tokenCheck();

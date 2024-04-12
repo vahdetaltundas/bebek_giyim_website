@@ -17,7 +17,7 @@ const HomePage = () => {
     },[])
   return (
     <div className="container mx-auto">
-      <div className="mt-20 grid gird-cols-2 md:grid-cols-4 gap-5 mx-5">
+      <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-5 mx-5">
         {products.map((product) => (
           <ProductCard product={product} key={product.id} />
         ))}

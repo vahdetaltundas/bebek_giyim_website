@@ -1,7 +1,7 @@
 import { fetchCategories } from "@/pages/api/hello";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { FaUser, FaFacebook, FaInstagram } from "react-icons/fa";
+import { FaUser, FaWhatsapp , FaInstagram } from "react-icons/fa";
 import { SlBasket } from "react-icons/sl";
 import { IoMdExit } from "react-icons/io";
 import { useRouter } from "next/router";
@@ -10,6 +10,7 @@ import Cookies from "js-cookie";
 import Image from "next/image";
 const Header = ({ loginCheck }) => {
   const [categories, setCategories] = useState([]);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
   const getCategories = async () => {
     try {
@@ -29,6 +30,9 @@ const Header = ({ loginCheck }) => {
       toast.success("Başarılı bir şekilde çıkış yaptınız.");
     }
   };
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
   return (
     <header className="shadow-md bg-white font-sans">
       <section className="flex items-center lg:justify-center max-sm:flex-col relative py-1 px-10 border-gray-200 border-b lg:min-h-[80px] max-lg:min-h-[60px]">
@@ -43,8 +47,11 @@ const Header = ({ loginCheck }) => {
           />
         </Link>
         <div className="md:absolute md:right-10 flex items-center max-md:ml-auto">
-          <FaFacebook className="w-6 h-6 mr-6" />
-          <FaInstagram className="w-6 h-6 mr-6" />
+          <a href={`https://wa.me/+905400303461`} target="_blank" rel="noopener noreferrer">
+            <FaWhatsapp  className="w-6 h-6 mr-6 hover:text-green-800" />
+          </a>
+          
+          <a href="https://www.instagram.com/babycorner_tr/"><FaInstagram className="w-6 h-6 mr-6" /></a>
           <div className="inline-block border-gray-300 border-l-2 pl-6 cursor-pointer">
             {loginCheck ? (
               <IoMdExit
@@ -64,7 +71,7 @@ const Header = ({ loginCheck }) => {
       </section>
       <div className="flex flex-wrap py-3.5 px-10 overflow-x-auto">
         <div className="flex ml-auto lg:order-1 lg:hidden">
-          <button id="toggle" className="ml-7">
+          <button id="toggle" onClick={toggleMenu} className="ml-7">
             <svg
               className="w-7 h-7"
               fill="#000"
@@ -103,6 +110,20 @@ const Header = ({ loginCheck }) => {
                 </li>
               ))
             : null}
+        </ul>
+      </div>
+      <div className={`flex flex-wrap py-3.5 px-10 overflow-x-auto ${isMenuOpen ? '' : 'hidden'} lg:hidden`}>
+        <ul className="lg:!flex justify-center lg:space-x-10 max-lg:space-y-3 w-full max-lg:mt-2">
+          <li className="max-lg:border-b max-lg:py-2">
+            <Link href="/" className="hover:text-[#007bff] text-[#007bff] font-bold text-[15px] block">Anasayfa</Link>
+          </li>
+          {categories.map(category => (
+            <li key={category.id} className="max-lg:border-b max-lg:py-2">
+              <Link href={`/kategori/${category.id}`} className="hover:text-[#007bff] text-gray-600 font-bold text-[15px] block">
+                {category.categoryName}
+              </Link>
+            </li>
+          ))}
         </ul>
       </div>
     </header>

@@ -7,9 +7,9 @@ import ErrorMessage from "@/components/errorMessage/ErrorMessage";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Cookies from "cookies";
-import React from "react"; // React ekledim
+import React from "react"; 
 
-const Register = () => { // Fonksiyon adını değiştirdim
+const Register = () => { 
   const router = useRouter();
   const formik = useFormik({
     initialValues: registerInitialValues,
@@ -35,7 +35,7 @@ const Register = () => { // Fonksiyon adını değiştirdim
     <section
       className="bg-gray-50 pt-10 pb-28 "
       style={{
-        backgroundImage: `url('/images/resim.jpg')`,
+        backgroundImage: `url('/images/resim.png')`,
         backgroundPosition: "center",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
@@ -224,4 +224,4 @@ export async function getServerSideProps(context) {
     };
   }
 }
-export default Register; // Bileşen adını export ettik
+export default Register; 

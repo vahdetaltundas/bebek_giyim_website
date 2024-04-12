@@ -66,8 +66,8 @@ router.use("/orderMail", tokenCheckUser, async function (req, res) {
       `\n-----------------------------------\nSipariş Veren Kullanıcının Bizim Sistemde Görülen Bilgileri:\n   Sistemdeki Adı Soyadı=${req.user.full_name}\n   Sistemdeki Şirket Adı=${req.user.company_name}\n   Sistemdeki Telefon Numarası=${req.user.phone_number}\n   Sistemdeki Eposta Adresi=${req.user.email}`
     );
     await sendEmail({
-      from: "baseapitest@outlook.com",
-      to: "vahdetaltundas2323@gmail.com",
+      from: process.env.EMAIL_USER,
+      to: "bilgi.babycorner@gmail.com",
       subject: "Yeni Sipariş Maili",
       text: orderMessage,
     });

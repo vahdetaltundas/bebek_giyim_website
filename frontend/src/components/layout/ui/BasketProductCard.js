@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { MdOutlineDelete } from "react-icons/md";
-import Image from 'next/image'
+import Image from 'next/image';
 
 const BasketProductCard = ({
   product,
@@ -14,11 +14,11 @@ const BasketProductCard = ({
     const newAmount = amount - 1;
     setAmount(newAmount);
     if (newAmount === 0) {
-        productDelete(product.product.id); // amount 0 ise ürünü sil
+        productDelete(product.product.id); 
     } else {
         handleAmountChange(product.product.id, newAmount);
     }
-};
+  };
 
   const quantityIncrease = () => {
     const newAmount = amount + 1;
@@ -34,15 +34,15 @@ const BasketProductCard = ({
       return item;
     });
     localStorage.setItem("baskets", JSON.stringify(updatedBaskets));
-  }, [amount]);
+  }, [amount, baskets, product.product.id]);
 
   return (
     <>
       <Image
         src={`${process.env.NEXT_PUBLIC_API_IMG_URL}/${product.productImage}`}
         alt="product-image"
-        width={0}
-        height={0}
+        width={100}  
+        height={100} 
         sizes="100vw"
         className="rounded-lg w-[10rem] h-auto"
       />
@@ -91,6 +91,5 @@ const BasketProductCard = ({
     </>
   );
 };
-
 
 export default BasketProductCard;
